@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Media Interaktif — Fisikita</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --board:#1F3B2E;
+    --board-dark:#152A20;
+    --chalk:#F3EFE3;
+    --chalk-dim:#B9C4B7;
+    --paper:#F1EEDF;
+    --paper-card:#FAF8F0;
+    --ink:#26301F;
+    --ink-soft:#5B6350;
+    --amber:#E8A33D;
+    --amber-dark:#8A5A16;
+    --blue:#6E9FB0;
+    --blue-soft:#93C9DE;
+    --blue-dark:#325366;
+    --line:#D9D4C0;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Plus Jakarta Sans', sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.6;
+  }
+  .mono{font-family:'JetBrains Mono', monospace;}
+
+  header.nav{
+    position:sticky; top:0; z-index:50;
+    background:var(--board);
+    border-bottom:3px solid var(--board-dark);
+  }
+  .nav-inner{
+    max-width:1100px; margin:0 auto; padding:16px 24px;
+    display:flex; align-items:center; justify-content:space-between;
+    flex-wrap:wrap; gap:12px;
+  }
+  .brand{
+    color:var(--chalk); font-weight:700; font-size:1.15rem;
+    display:flex; align-items:center; gap:10px; text-decoration:none;
+  }
+  nav.links{display:flex; gap:22px; flex-wrap:wrap;}
+  nav.links a{
+    color:var(--chalk-dim); text-decoration:none; font-size:.92rem; font-weight:500;
+    transition:color .2s;
+  }
+  nav.links a:hover{color:var(--amber);}
+
+  .page-head{
+    background:var(--board); color:var(--chalk); padding:48px 24px 40px;
+  }
+  .page-head-inner{max-width:1100px; margin:0 auto;}
+  .page-head .tag{
+    font-family:'Kalam', cursive; color:var(--amber); font-size:1.1rem;
+    display:inline-block; transform:rotate(-2deg); margin-bottom:8px;
+  }
+  .page-head h1{font-size:2rem; font-weight:700; margin-bottom:10px;}
+  .page-head p{color:var(--chalk-dim); max-width:60ch;}
+
+  section{padding:50px 24px 80px;}
+  .section-inner{max-width:1100px; margin:0 auto;}
+
+  .lab-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:24px;}
+  .lab-card{
+    background:var(--paper-card); border:1px solid var(--line); border-radius:12px;
+    overflow:hidden; display:flex; flex-direction:column;
+  }
+  .lab-card .lab-head{padding:18px 20px 12px;}
+  .lab-card .kelas-tag{
+    font-family:'JetBrains Mono', monospace; font-size:.75rem; letter-spacing:.05em;
+    color:var(--blue-dark); background:#E3EDF0; display:inline-block;
+    padding:4px 10px; border-radius:5px; margin-bottom:10px; width:fit-content;
+  }
+  .lab-card h3{font-size:1.05rem; margin-bottom:4px;}
+  .lab-card .desc{font-size:.87rem; color:var(--ink-soft); padding:0 20px 14px;}
+
+  .frame-wrap{
+    margin:0 20px 20px; border-radius:8px; overflow:hidden;
+    border:1px solid var(--line); background:#fff;
+  }
+  .frame-wrap iframe{
+    display:block; width:100%; height:320px; border:0;
+  }
+  .frame-empty{
+    height:320px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:8px; background:repeating-linear-gradient(135deg, #EFEBDC 0 12px, #F5F2E6 12px 24px);
+    border:1.5px dashed var(--line); text-align:center; padding:20px;
+  }
+  .frame-empty .icon{
+    width:38px; height:38px; border-radius:50%; background:#E3EDF0;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .frame-empty .icon svg{width:18px; height:18px;}
+  .frame-empty p{font-size:.85rem; color:var(--ink-soft); max-width:32ch;}
+  .frame-empty code{
+    font-family:'JetBrains Mono', monospace; font-size:.78rem;
+    background:#fff; border:1px solid var(--line); padding:2px 6px; border-radius:4px;
+  }
+
+  footer{
+    background:var(--board-dark); color:var(--chalk-dim); padding:30px 24px; text-align:center; font-size:.85rem;
+  }
+
+  @media(max-width:760px){
+    .lab-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="website-guru-fisika.html">
+      <svg width="30" height="30" viewBox="0 0 130 130" style="flex-shrink:0;">
+        <circle cx="65" cy="30" r="3.2" fill="#F3EFE3"/>
+        <circle cx="41" cy="83" r="3.5" fill="#F3EFE3" opacity="0.2"/>
+        <circle cx="53" cy="87" r="4" fill="#F3EFE3" opacity="0.35"/>
+        <circle cx="65" cy="88.5" r="4.5" fill="#F3EFE3" opacity="0.55"/>
+        <circle cx="75" cy="87.7" r="5" fill="#F3EFE3" opacity="0.78"/>
+        <line x1="65" y1="30" x2="84" y2="86" stroke="#F3EFE3" stroke-width="2.4" stroke-linecap="round"/>
+        <circle cx="84" cy="86" r="9" fill="#E8A33D"/>
+      </svg>
+      Fisikita <span class="mono" style="font-size:.75rem;color:var(--chalk-dim);font-weight:400;">· SMAN 10 Bulukumba</span>
+    </a>
+    <nav class="links">
+      <a href="website-guru-fisika.html#sumber-belajar">← Kembali ke Sumber Belajar</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-head">
+  <div class="page-head-inner">
+    <span class="tag">tonton & amati</span>
+    <h1>Media Interaktif</h1>
+    <p>Kumpulan video animasi, infografis interaktif, dan visualisasi konsep fisika. Setiap kartu siap ditempeli link embed media — tinggal isi, tanpa perlu ubah tata letak.</p>
+  </div>
+</div>
+
+<section>
+  <div class="section-inner">
+    <div class="lab-grid" id="mediaGrid"></div>
+  </div>
+</section>
+
+<footer>© 2026 Fisikita — SMAN 10 Bulukumba</footer>
+
+<script>
+  // ======================================================
+  // DAFTAR MEDIA INTERAKTIF
+  // Untuk memasang media: isi "src" dengan URL embed
+  // (misalnya link video YouTube embed, Canva, Genially, H5P, dll).
+  // Kalau "src" dikosongkan (''), kartu akan tampil sebagai
+  // bingkai kosong dengan petunjuk pengisian.
+  // ======================================================
+  const MEDIA = [
+    {
+      kelas: 'KELAS X',
+      title: 'Animasi Hukum Newton',
+      desc: 'Video animasi yang memvisualisasikan tiga hukum Newton lewat contoh sehari-hari.',
+      src: ''
+    },
+    {
+      kelas: 'KELAS XI',
+      title: 'Infografis Interaktif Fluida',
+      desc: 'Klik tiap bagian infografis untuk melihat penjelasan tekanan dan gaya apung.',
+      src: ''
+    },
+    {
+      kelas: 'KELAS XI',
+      title: 'Visualisasi Gelombang Bunyi',
+      desc: 'Animasi interaktif memperlihatkan rambatan gelombang bunyi di berbagai medium.',
+      src: ''
+    },
+    {
+      kelas: 'KELAS XII',
+      title: 'Video Penjelasan Fisika Inti',
+      desc: 'Video singkat tentang peluruhan radioaktif dan penerapannya di kehidupan.',
+      src: ''
+    }
+    // Contoh menambah media baru:
+    // { kelas: 'KELAS XII', title: 'Animasi Medan Magnet', desc: 'Deskripsi singkat.', src: 'https://www.youtube.com/embed/xxxxxxxx' },
+  ];
+
+  function renderMedia(){
+    const grid = document.getElementById('mediaGrid');
+    grid.innerHTML = MEDIA.map(item => `
+      <div class="lab-card">
+        <div class="lab-head">
+          <span class="kelas-tag">${item.kelas}</span>
+          <h3>${item.title}</h3>
+        </div>
+        <p class="desc">${item.desc}</p>
+        <div class="frame-wrap">
+          ${item.src ? `<iframe src="${item.src}" loading="lazy" title="${item.title}" allowfullscreen></iframe>` : `
+            <div class="frame-empty">
+              <div class="icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#325366" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M8 4l-5 4v8l5 4M16 4l5 4v8l-5 4M12 3v18"/>
+                </svg>
+              </div>
+              <p>Belum ada media terpasang. Isi field <code>src</code> pada objek ini di array <code>MEDIA</code>.</p>
+            </div>
+          `}
+        </div>
+      </div>
+    `).join('');
+  }
+  renderMedia();
+</script>
+
+</body>
+</html>
