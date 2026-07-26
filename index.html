@@ -81,7 +81,7 @@
 
   /* NAV */
   header.nav{
-    position:sticky; top:0; z-index:50;
+    position:fixed; top:0; left:0; right:0; z-index:50;
     background:var(--board);
     border-bottom:3px solid var(--board-dark);
   }
@@ -310,6 +310,19 @@
     </nav>
   </div>
 </header>
+<script>
+  // Header sekarang "fixed" (bukan sticky) supaya konsisten di semua
+  // browser mobile. Skrip ini otomatis mengukur tinggi header dan
+  // memberi jarak (padding) pada body, supaya konten tidak ketutup.
+  (function(){
+    function adjustHeaderSpacing(){
+      var header = document.querySelector('header.nav');
+      if(header){ document.body.style.paddingTop = header.offsetHeight + 'px'; }
+    }
+    adjustHeaderSpacing();
+    window.addEventListener('resize', adjustHeaderSpacing);
+  })();
+</script>
 
 <section class="hero">
   <div class="hero-inner">
