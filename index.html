@@ -95,12 +95,31 @@
     display:flex; align-items:center; gap:10px;
   }
 
-  nav.links{display:flex; gap:22px; flex-wrap:wrap;}
+  nav.links{display:flex; flex-wrap:wrap; align-items:center;}
   nav.links a{
     color:var(--chalk-dim); text-decoration:none; font-size:.92rem; font-weight:500;
-    transition:color .2s;
+    transition:color .2s; margin-left:22px;
   }
+  nav.links a:first-child{margin-left:0;}
   nav.links a:hover{color:var(--amber);}
+
+  .menu-toggle{
+    display:none; background:transparent; border:1px solid var(--chalk-dim); color:var(--chalk);
+    border-radius:8px; width:40px; height:40px; font-size:1.1rem; cursor:pointer; flex-shrink:0;
+  }
+
+  @media(max-width:760px){
+    .menu-toggle{display:block;}
+    nav.links{
+      display:none; width:100%; flex-direction:column; align-items:stretch;
+      background:var(--board-dark); border-radius:10px; margin-top:14px; padding:6px 4px;
+    }
+    nav.links.open{display:flex;}
+    nav.links a{
+      margin-left:0; padding:13px 16px; border-bottom:1px solid rgba(255,255,255,0.06);
+    }
+    nav.links a:last-child{border-bottom:none;}
+  }
 
   /* HERO */
   .hero{
@@ -280,7 +299,8 @@
       </svg>
       Fisikita <span class="mono" style="font-size:.75rem;color:var(--chalk-dim);font-weight:400;">· SMAN 10 Bulukumba</span>
     </div>
-    <nav class="links">
+    <button class="menu-toggle" id="menuToggle" aria-label="Buka menu">☰</button>
+    <nav class="links" id="navLinks">
       <a href="#materi">Materi</a>
       <a href="#latihan">Latihan</a>
       <a href="#sumber-belajar">Sumber Belajar</a>
@@ -432,6 +452,17 @@
 </footer>
 
 <script>
+  // Toggle menu hamburger di tampilan mobile
+  const menuToggle = document.getElementById('menuToggle');
+  const navLinks = document.getElementById('navLinks');
+  menuToggle.addEventListener('click', () => {
+    navLinks.classList.toggle('open');
+  });
+  // Tutup menu otomatis kalau salah satu link diklik
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => navLinks.classList.remove('open'));
+  });
+
   // ======================================================
   // ANIMASI GELOMBANG PADA JUDUL HERO
   // Memecah teks jadi huruf per huruf, tiap huruf diberi jeda
