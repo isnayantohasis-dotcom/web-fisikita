@@ -27,8 +27,6 @@
   .page-head .tag{font-family:'JetBrains Mono', monospace; font-size:.78rem; letter-spacing:.05em; background:rgba(255,255,255,0.1); color:var(--amber); display:inline-block; padding:4px 10px; border-radius:5px; margin-bottom:12px;}
   .page-head h1{font-size:2rem; font-weight:700; margin-bottom:10px;}
   .page-head p{color:var(--chalk-dim); max-width:60ch;}
-  .page-head .howto{margin-top:18px; padding:14px 16px; background:rgba(255,255,255,0.06); border-radius:8px; font-size:.85rem; color:var(--chalk-dim); max-width:60ch;}
-  .page-head .howto code{font-family:'JetBrains Mono', monospace; background:rgba(0,0,0,0.25); padding:1px 6px; border-radius:4px; color:var(--chalk);}
   section{padding:50px 24px 80px;}
   .section-inner{max-width:900px; margin:0 auto; display:flex; flex-direction:column; gap:22px;}
   .topic-card{background:var(--paper-card); border:1px solid var(--line); border-radius:12px; overflow:hidden;}
@@ -80,9 +78,10 @@
     <span class="tag">KELAS X</span>
     <h1>Fondasi Mekanika</h1>
     <p>Ringkasan materi dalam format PDF, ditampilkan langsung dari Google Drive.</p>
-    <div class="howto">
-      <strong>Cara memasang PDF:</strong> di Drive, klik kanan file → <em>Bagikan</em> → atur akses jadi "Siapa saja yang memiliki link". Salin link-nya, lalu ubah bagian <code>/view</code> jadi <code>/preview</code>. Tempel hasilnya ke field <code>src</code> pada array <code>TOPICS</code> di bagian bawah file ini.
-    </div>
+    <!-- Cara memasang PDF: di Google Drive, klik kanan file -> Bagikan ->
+         atur akses jadi "Siapa saja yang memiliki link". Salin link-nya,
+         lalu ubah bagian /view jadi /preview. Tempel hasilnya ke field
+         "src" pada array TOPICS di bagian bawah file ini. -->
   </div>
 </div>
 
