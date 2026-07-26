@@ -1,0 +1,44 @@
+PANDUAN PENAMAAN FILE GAMBAR — FISIKITA
+=========================================
+
+Semua gambar (foto profil, dokumentasi kegiatan, thumbnail lab/gim/media)
+ditaruh di folder "images/" ini, sejajar dengan file-file HTML.
+
+ATURAN PENAMAAN FILE:
+- Huruf kecil semua
+- Tanpa spasi -> pakai tanda hubung (-)
+- Tanpa karakter aneh (é, ñ, &, %, dst)
+- Ekstensi: .jpg untuk foto, .png untuk gambar dengan latar transparan
+
+CONTOH YANG BENAR:
+  foto-profil.jpg
+  kegiatan-pelatihan-gim.jpg
+  kegiatan-workshop-ai.jpg
+  lab-gerak-parabola.png
+  gim-tebak-satuan.png
+  media-animasi-newton.jpg
+
+CONTOH YANG SALAH (hindari):
+  Foto Profil.jpg        -> ada spasi & huruf besar
+  kegiatan_2026#1.JPG     -> underscore, simbol, ekstensi kapital
+  IMG_20260724_143210.jpg -> nama bawaan kamera, tidak deskriptif
+
+-----------------------------------------
+NAMA FILE YANG SUDAH DITUNGGU KODE SAAT INI:
+-----------------------------------------
+1. Foto profil guru (halaman profil.html):
+   images/foto-profil.jpg
+   -> tinggal taruh file dengan nama PERSIS ini, otomatis muncul
+      menggantikan ikon avatar. Kalau belum ada, otomatis
+      fallback ke ikon (tidak akan error/gambar rusak).
+
+2. Dokumentasi kegiatan (halaman profil.html, array KEGIATAN):
+   isi field "image" pada tiap objek kegiatan, contoh:
+   image: 'images/kegiatan-pelatihan-gim.jpg'
+
+3. Thumbnail Lab Maya / Gim Edukasi / Media Interaktif:
+   isi field "image" pada array LABS / GAMES / MEDIA, contoh:
+   image: 'images/lab-gerak-parabola.png'
+
+Kalau field "image" dikosongkan (''), otomatis pakai ikon+gradien
+bawaan — jadi tidak akan pernah tampil kosong/error.
