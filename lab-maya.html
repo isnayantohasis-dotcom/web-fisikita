@@ -179,8 +179,8 @@
   // DAFTAR LAB MAYA
   // - src   : URL embed lab. Kosongkan ('') kalau belum siap.
   // - image : URL/path gambar PNG/JPG untuk thumbnail kartu.
-  //           Taruh file gambar di folder "images/" di sebelah
-  //           file HTML ini, lalu isi contoh: 'images/parabola.png'
+  //           Taruh file gambar sejajar (folder yang sama) dengan
+  //           file HTML ini, lalu isi contoh: 'parabola.png'
   //           Kosongkan ('') untuk pakai ikon+gradien bawaan.
   // ======================================================
   const LABS = [
@@ -189,7 +189,7 @@
     { kelas: 'KELAS XI', title: 'Simulasi Getaran & Gelombang', desc: 'Visualisasi gelombang transversal & longitudinal.', src: '', image: '' },
     { kelas: 'KELAS XII', title: 'Simulasi Rangkaian Listrik', desc: 'Susun rangkaian seri-paralel, ukur arus & tegangan.', src: '', image: '' }
     // Contoh menambah lab baru dengan gambar sendiri:
-    // { kelas: 'KELAS XII', title: 'Simulasi Medan Magnet', desc: 'Deskripsi singkat.', src: 'https://link-lab-anda.netlify.app', image: 'images/medan-magnet.png' },
+    // { kelas: 'KELAS XII', title: 'Simulasi Medan Magnet', desc: 'Deskripsi singkat.', src: 'https://link-lab-anda.netlify.app', image: 'medan-magnet.png' },
   ];
 
   function renderCards(){

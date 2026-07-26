@@ -2,7 +2,8 @@ PANDUAN PENAMAAN FILE GAMBAR — FISIKITA
 =========================================
 
 Semua gambar (foto profil, dokumentasi kegiatan, thumbnail lab/gim/media)
-ditaruh di folder "images/" ini, sejajar dengan file-file HTML.
+ditaruh SEJAJAR dengan file-file HTML (folder yang sama, TIDAK perlu
+bikin folder "images" lagi — supaya lebih gampang di-upload lewat GitHub).
 
 ATURAN PENAMAAN FILE:
 - Huruf kecil semua
@@ -27,18 +28,22 @@ CONTOH YANG SALAH (hindari):
 NAMA FILE YANG SUDAH DITUNGGU KODE SAAT INI:
 -----------------------------------------
 1. Foto profil guru (halaman profil.html):
-   images/foto-profil.jpg
-   -> tinggal taruh file dengan nama PERSIS ini, otomatis muncul
-      menggantikan ikon avatar. Kalau belum ada, otomatis
-      fallback ke ikon (tidak akan error/gambar rusak).
+   foto-profil.jpg
+   -> tinggal upload file dengan nama PERSIS ini ke folder utama repo
+      (sejajar dengan index.html), otomatis muncul menggantikan ikon
+      avatar. Kalau belum ada, otomatis fallback ke ikon.
 
 2. Dokumentasi kegiatan (halaman profil.html, array KEGIATAN):
    isi field "image" pada tiap objek kegiatan, contoh:
-   image: 'images/kegiatan-pelatihan-gim.jpg'
+   image: 'kegiatan-pelatihan-gim.jpg'
 
 3. Thumbnail Lab Maya / Gim Edukasi / Media Interaktif:
    isi field "image" pada array LABS / GAMES / MEDIA, contoh:
-   image: 'images/lab-gerak-parabola.png'
+   image: 'lab-gerak-parabola.png'
 
 Kalau field "image" dikosongkan (''), otomatis pakai ikon+gradien
 bawaan — jadi tidak akan pernah tampil kosong/error.
+
+CARA UPLOAD KE GITHUB:
+Cukup drag file gambar ke halaman utama repo (sama seperti upload
+file HTML), TIDAK perlu bikin folder apa pun.
