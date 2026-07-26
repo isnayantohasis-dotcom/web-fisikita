@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Materi Kelas X — Fisikita</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --board:#1F3B2E; --board-dark:#152A20; --chalk:#F3EFE3; --chalk-dim:#B9C4B7;
+    --paper:#F1EEDF; --paper-card:#FAF8F0; --ink:#26301F; --ink-soft:#5B6350;
+    --amber:#E8A33D; --amber-dark:#8A5A16; --blue:#6E9FB0; --blue-soft:#93C9DE;
+    --blue-dark:#325366; --line:#D9D4C0;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:'Plus Jakarta Sans', sans-serif; background:var(--paper); color:var(--ink); line-height:1.6;}
+  .mono{font-family:'JetBrains Mono', monospace;}
+  header.nav{position:sticky; top:0; z-index:50; background:var(--board); border-bottom:3px solid var(--board-dark);}
+  .nav-inner{max-width:1100px; margin:0 auto; padding:16px 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;}
+  .brand{color:var(--chalk); font-weight:700; font-size:1.15rem; display:flex; align-items:center; gap:10px; text-decoration:none;}
+  nav.links a{color:var(--chalk-dim); text-decoration:none; font-size:.92rem; font-weight:500;}
+  nav.links a:hover{color:var(--amber);}
+  .page-head{background:var(--board); color:var(--chalk); padding:48px 24px 40px;}
+  .page-head-inner{max-width:900px; margin:0 auto;}
+  .page-head .tag{font-family:'JetBrains Mono', monospace; font-size:.78rem; letter-spacing:.05em; background:rgba(255,255,255,0.1); color:var(--amber); display:inline-block; padding:4px 10px; border-radius:5px; margin-bottom:12px;}
+  .page-head h1{font-size:2rem; font-weight:700; margin-bottom:10px;}
+  .page-head p{color:var(--chalk-dim); max-width:60ch;}
+  .page-head .howto{margin-top:18px; padding:14px 16px; background:rgba(255,255,255,0.06); border-radius:8px; font-size:.85rem; color:var(--chalk-dim); max-width:60ch;}
+  .page-head .howto code{font-family:'JetBrains Mono', monospace; background:rgba(0,0,0,0.25); padding:1px 6px; border-radius:4px; color:var(--chalk);}
+  section{padding:50px 24px 80px;}
+  .section-inner{max-width:900px; margin:0 auto; display:flex; flex-direction:column; gap:22px;}
+  .topic-card{background:var(--paper-card); border:1px solid var(--line); border-radius:12px; overflow:hidden;}
+  .topic-head{padding:18px 20px 14px; display:flex; align-items:center; gap:12px;}
+  .topic-head .icon{width:34px; height:34px; border-radius:50%; background:#E3EDF0; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .topic-head .icon svg{width:17px; height:17px;}
+  .topic-head h3{font-size:1.05rem;}
+  .frame-wrap{margin:0 20px 20px; border-radius:8px; overflow:hidden; border:1px solid var(--line); background:#fff;}
+  .frame-wrap iframe{display:block; width:100%; height:480px; border:0;}
+  .frame-empty{height:220px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; background:repeating-linear-gradient(135deg, #EFEBDC 0 12px, #F5F2E6 12px 24px); border:1.5px dashed var(--line); text-align:center; padding:20px;}
+  .frame-empty p{font-size:.85rem; color:var(--ink-soft); max-width:36ch;}
+  .frame-empty code{font-family:'JetBrains Mono', monospace; font-size:.78rem; background:#fff; border:1px solid var(--line); padding:2px 6px; border-radius:4px;}
+  footer{background:var(--board-dark); color:var(--chalk-dim); padding:30px 24px; text-align:center; font-size:.85rem;}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <svg width="30" height="30" viewBox="0 0 130 130" style="flex-shrink:0;">
+        <circle cx="65" cy="30" r="3.2" fill="#F3EFE3"/><circle cx="41" cy="83" r="3.5" fill="#F3EFE3" opacity="0.2"/>
+        <circle cx="53" cy="87" r="4" fill="#F3EFE3" opacity="0.35"/><circle cx="65" cy="88.5" r="4.5" fill="#F3EFE3" opacity="0.55"/>
+        <circle cx="75" cy="87.7" r="5" fill="#F3EFE3" opacity="0.78"/>
+        <line x1="65" y1="30" x2="84" y2="86" stroke="#F3EFE3" stroke-width="2.4" stroke-linecap="round"/>
+        <circle cx="84" cy="86" r="9" fill="#E8A33D"/>
+      </svg>
+      Fisikita <span class="mono" style="font-size:.75rem;color:var(--chalk-dim);font-weight:400;">· SMAN 10 Bulukumba</span>
+    </a>
+    <nav class="links"><a href="index.html#materi">← Kembali ke Materi</a></nav>
+  </div>
+</header>
+
+<div class="page-head">
+  <div class="page-head-inner">
+    <span class="tag">KELAS X</span>
+    <h1>Fondasi Mekanika</h1>
+    <p>Ringkasan materi dalam format PDF, ditampilkan langsung dari Google Drive.</p>
+    <div class="howto">
+      <strong>Cara memasang PDF:</strong> di Drive, klik kanan file → <em>Bagikan</em> → atur akses jadi "Siapa saja yang memiliki link". Salin link-nya, lalu ubah bagian <code>/view</code> jadi <code>/preview</code>. Tempel hasilnya ke field <code>src</code> pada array <code>TOPICS</code> di bagian bawah file ini.
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="section-inner" id="topicList"></div>
+</section>
+
+<footer>© 2026 Fisikita — SMAN 10 Bulukumba</footer>
+
+<script>
+  // ======================================================
+  // DAFTAR TOPIK MATERI — KELAS X
+  // Isi "src" dengan link embed Drive (format .../preview).
+  // Kosongkan ('') kalau PDF-nya belum siap dipasang.
+  // ======================================================
+  const TOPICS = [
+    { title: 'Besaran & pengukuran', src: '' },
+    { title: 'Kinematika gerak lurus', src: '' },
+    { title: 'Gerak melingkar beraturan', src: '' },
+    { title: 'Hukum Newton tentang gerak', src: '' }
+    // Contoh: { title: 'Suhu & kalor', src: 'https://drive.google.com/file/d/FILE_ID/preview' },
+  ];
+
+  function renderTopics(){
+    const list = document.getElementById('topicList');
+    list.innerHTML = TOPICS.map(t => `
+      <div class="topic-card">
+        <div class="topic-head">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#325366" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/>
+            </svg>
+          </div>
+          <h3>${t.title}</h3>
+        </div>
+        <div class="frame-wrap">
+          ${t.src ? `<iframe src="${t.src}" loading="lazy" title="${t.title}"></iframe>` : `
+            <div class="frame-empty">
+              <p>PDF belum dipasang. Isi field <code>src</code> pada objek ini di array <code>TOPICS</code>.</p>
+            </div>
+          `}
+        </div>
+      </div>
+    `).join('');
+  }
+  renderTopics();
+</script>
+
+</body>
+</html>

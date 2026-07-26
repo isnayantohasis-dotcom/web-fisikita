@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profil — Fisikita</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --board:#1F3B2E; --board-dark:#152A20; --chalk:#F3EFE3; --chalk-dim:#B9C4B7;
+    --paper:#F1EEDF; --paper-card:#FFFFFF; --ink:#26301F; --ink-soft:#5B6350;
+    --amber:#E8A33D; --amber-dark:#8A5A16; --blue:#6E9FB0; --blue-soft:#93C9DE;
+    --blue-dark:#325366; --line:#E4E0D0;
+    --accent:#325366; --accent-2:#6E9FB0; --accent-tint:#E3EDF0;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:'Plus Jakarta Sans', sans-serif; background:var(--paper); color:var(--ink); line-height:1.6;}
+  .mono{font-family:'JetBrains Mono', monospace;}
+
+  header.nav{position:sticky; top:0; z-index:50; background:var(--board); border-bottom:3px solid var(--board-dark);}
+  .nav-inner{max-width:1100px; margin:0 auto; padding:16px 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;}
+  .brand{color:var(--chalk); font-weight:700; font-size:1.15rem; display:flex; align-items:center; gap:10px; text-decoration:none;}
+  nav.links a{color:var(--chalk-dim); text-decoration:none; font-size:.92rem; font-weight:500;}
+  nav.links a:hover{color:var(--amber);}
+
+  .page-head-wrap{padding:36px 24px 0;}
+  .page-head{
+    max-width:1100px; margin:0 auto; border-radius:26px; overflow:hidden; position:relative;
+    background:linear-gradient(120deg, var(--board) 0%, var(--accent) 100%);
+    color:var(--chalk); padding:44px 40px; box-shadow:0 20px 40px rgba(31,59,46,0.16);
+    display:flex; align-items:center; gap:28px; flex-wrap:wrap;
+  }
+  .page-head::after{
+    content:""; position:absolute; right:-60px; top:-60px; width:220px; height:220px;
+    border-radius:50%; background:rgba(255,255,255,0.07);
+  }
+  .avatar{
+    width:96px; height:96px; border-radius:50%; background:rgba(255,255,255,0.14);
+    border:2px solid rgba(255,255,255,0.25); display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; position:relative;
+  }
+  .avatar svg{width:44px; height:44px;}
+  .page-head-text{position:relative;}
+  .page-head .tag{
+    font-family:'JetBrains Mono', monospace; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase;
+    background:rgba(255,255,255,0.14); color:var(--chalk); display:inline-block; padding:6px 14px;
+    border-radius:20px; margin-bottom:12px;
+  }
+  .page-head h1{font-size:1.9rem; font-weight:800; margin-bottom:8px;}
+  .page-head p.role{color:rgba(243,239,227,0.85); font-size:.98rem;}
+
+  section{padding:44px 24px 80px;}
+  .section-inner{max-width:900px; margin:0 auto; display:flex; flex-direction:column; gap:22px;}
+
+  .info-card{
+    background:var(--paper-card); border:1px solid var(--line); border-radius:18px;
+    padding:26px 28px; box-shadow:0 3px 10px rgba(31,59,46,0.05);
+  }
+  .info-card h2{font-size:1.15rem; font-weight:700; margin-bottom:14px; display:flex; align-items:center; gap:10px;}
+  .info-card h2 .icon-dot{width:8px; height:8px; border-radius:50%; background:var(--accent);}
+  .info-card p{color:var(--ink-soft); font-size:.95rem;}
+  .info-card p + p{margin-top:10px;}
+
+  .quote-block{
+    font-family:'Kalam', cursive; font-size:1.15rem; color:var(--accent);
+    border-left:3px solid var(--accent-2); padding-left:16px; margin:4px 0;
+  }
+
+  .riwayat-list{list-style:none;}
+  .riwayat-list li{
+    position:relative; padding-left:26px; margin-bottom:12px; font-size:.93rem; color:var(--ink-soft);
+  }
+  .riwayat-list li::before{
+    content:""; position:absolute; left:0; top:7px; width:9px; height:9px; border-radius:50%;
+    background:var(--amber);
+  }
+  .riwayat-list strong{color:var(--ink); font-weight:600;}
+
+  .kontak-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:16px;}
+  .kontak-item{
+    display:flex; align-items:center; gap:12px; background:var(--accent-tint);
+    border-radius:12px; padding:14px 16px;
+  }
+  .kontak-item .icon{width:34px; height:34px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .kontak-item .icon svg{width:16px; height:16px;}
+  .kontak-item .label{font-size:.72rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em;}
+  .kontak-item .value{font-size:.9rem; font-weight:600; color:var(--ink);}
+
+  footer{background:var(--board-dark); color:var(--chalk-dim); padding:30px 24px; text-align:center; font-size:.85rem;}
+
+  /* ============ DOKUMENTASI KEGIATAN ============ */
+  .doc-section{padding:10px 24px 70px;}
+  .doc-inner{max-width:1120px; margin:0 auto;}
+  .doc-header{
+    background:var(--paper-card); border:1px solid var(--line); border-radius:20px;
+    padding:26px 28px; display:flex; align-items:center; gap:22px; flex-wrap:wrap;
+    box-shadow:0 3px 10px rgba(31,59,46,0.05); margin-bottom:22px;
+  }
+  .doc-header-icon{
+    width:58px; height:58px; border-radius:50%; background:var(--board); flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .doc-header-icon svg{width:26px; height:26px;}
+  .doc-header-text h2{font-size:1.4rem; font-weight:800; margin-bottom:4px;}
+  .doc-header-text p{color:var(--ink-soft); font-size:.9rem; max-width:52ch;}
+
+  .stats-row{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:26px;}
+  .stat-card{
+    background:var(--paper-card); border:1px solid var(--line); border-radius:16px;
+    padding:16px 18px; display:flex; align-items:center; gap:12px;
+    box-shadow:0 3px 10px rgba(31,59,46,0.05);
+  }
+  .stat-icon{width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .stat-icon svg{width:20px; height:20px;}
+  .stat-num{font-size:1.25rem; font-weight:800; line-height:1.1;}
+  .stat-label{font-size:.78rem; color:var(--ink-soft);}
+
+  .doc-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-bottom:6px;}
+  .doc-card{
+    background:var(--paper-card); border:1px solid var(--line); border-radius:16px; overflow:hidden;
+    box-shadow:0 3px 10px rgba(31,59,46,0.05);
+  }
+  .doc-thumb{height:130px; position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden;}
+  .doc-thumb img{width:100%; height:100%; object-fit:cover;}
+  .doc-thumb svg{width:30px; height:30px; opacity:.85;}
+  .doc-date{
+    position:absolute; left:10px; top:10px; background:var(--board-dark); color:var(--chalk);
+    border-radius:8px; padding:5px 9px; text-align:center; line-height:1.15;
+  }
+  .doc-date .d{font-size:1rem; font-weight:800;}
+  .doc-date .m{font-family:'JetBrains Mono', monospace; font-size:.62rem; letter-spacing:.04em;}
+  .doc-body{padding:14px 16px 18px;}
+  .doc-tag{
+    display:inline-block; font-size:.68rem; font-weight:700; letter-spacing:.03em;
+    padding:4px 10px; border-radius:20px; margin-bottom:9px; color:#fff;
+  }
+  .doc-card h3{font-size:.98rem; font-weight:700; margin-bottom:6px;}
+  .doc-card .desc{font-size:.83rem; color:var(--ink-soft); margin-bottom:10px;}
+  .doc-loc{display:flex; align-items:center; gap:5px; font-size:.78rem; color:var(--ink-soft);}
+  .doc-loc svg{width:13px; height:13px; flex-shrink:0;}
+
+  .timeline-line{
+    height:1px; background:var(--line); position:relative; margin:0 0 34px;
+    background-image:repeating-linear-gradient(90deg, var(--line) 0 6px, transparent 6px 12px);
+  }
+
+  .values-row{
+    background:var(--paper-card); border:1px solid var(--line); border-radius:20px;
+    padding:24px 26px; display:grid; grid-template-columns:1.1fr repeat(4, 1fr); gap:20px;
+    box-shadow:0 3px 10px rgba(31,59,46,0.05); margin-bottom:22px;
+  }
+  .values-lead{display:flex; align-items:flex-start; gap:14px;}
+  .values-lead .icon-circle{width:46px; height:46px; border-radius:50%; background:var(--accent-tint); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .values-lead .icon-circle svg{width:22px; height:22px;}
+  .values-lead h3{font-size:1rem; font-weight:700; margin-bottom:4px;}
+  .values-lead p{font-size:.83rem; color:var(--ink-soft);}
+  .value-item .icon-circle{width:40px; height:40px; border-radius:50%; background:var(--accent-tint); display:flex; align-items:center; justify-content:center; margin-bottom:8px;}
+  .value-item .icon-circle svg{width:18px; height:18px;}
+  .value-item h4{font-size:.9rem; font-weight:700; margin-bottom:4px;}
+  .value-item p{font-size:.8rem; color:var(--ink-soft);}
+
+  .quote-bar{
+    background:var(--board-dark); color:var(--chalk); border-radius:16px;
+    padding:18px 26px; text-align:center; font-family:'Kalam', cursive; font-size:1.02rem;
+  }
+  .quote-bar span{color:var(--amber);}
+
+  @media(max-width:900px){
+    .stats-row{grid-template-columns:repeat(2,1fr);}
+    .doc-grid{grid-template-columns:repeat(2,1fr);}
+    .values-row{grid-template-columns:repeat(2,1fr);}
+  }
+  @media(max-width:600px){
+    .doc-grid{grid-template-columns:1fr;}
+    .values-row{grid-template-columns:1fr;}
+  }
+
+  @media(max-width:640px){
+    .page-head{flex-direction:column; text-align:center; padding:34px 24px;}
+    .kontak-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <svg width="30" height="30" viewBox="0 0 130 130" style="flex-shrink:0;">
+        <circle cx="65" cy="30" r="3.2" fill="#F3EFE3"/><circle cx="41" cy="83" r="3.5" fill="#F3EFE3" opacity="0.2"/>
+        <circle cx="53" cy="87" r="4" fill="#F3EFE3" opacity="0.35"/><circle cx="65" cy="88.5" r="4.5" fill="#F3EFE3" opacity="0.55"/>
+        <circle cx="75" cy="87.7" r="5" fill="#F3EFE3" opacity="0.78"/>
+        <line x1="65" y1="30" x2="84" y2="86" stroke="#F3EFE3" stroke-width="2.4" stroke-linecap="round"/>
+        <circle cx="84" cy="86" r="9" fill="#E8A33D"/>
+      </svg>
+      Fisikita <span class="mono" style="font-size:.75rem;color:var(--chalk-dim);font-weight:400;">· SMAN 10 Bulukumba</span>
+    </a>
+    <nav class="links"><a href="index.html">← Kembali ke Beranda</a></nav>
+  </div>
+</header>
+
+<div class="page-head-wrap">
+  <div class="page-head">
+    <div class="avatar">
+      <!-- Ganti bagian ini dengan <img src="images/foto-anda.jpg"> kalau sudah punya foto -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="#F3EFE3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6"/>
+      </svg>
+    </div>
+    <div class="page-head-text">
+      <span class="tag">Profil Pengajar</span>
+      <h1>Hasisba Isnayanto</h1>
+      <p class="role">Guru Fisika · SMAN 10 Bulukumba</p>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="section-inner">
+
+    <div class="info-card">
+      <h2><span class="icon-dot"></span>Tentang Saya</h2>
+      <p>Assalamu'alaikum, saya Hasisba Isnayanto, Guru Fisika di UPT SMA Negeri 10 Bulukumba. Melalui Fisikita, saya berbagi materi, latihan, eksperimen, dan berbagai media pembelajaran agar fisika lebih mudah dipahami, dekat dengan kehidupan, dan menyenangkan untuk dipelajari.</p>
+    </div>
+
+    <div class="info-card">
+      <h2><span class="icon-dot"></span>Filosofi Mengajar</h2>
+      <div class="quote-block">"Fisika bukan sekadar menghafal rumus, tetapi belajar memahami alam melalui rasa ingin tahu, berpikir kritis, dan pengalaman."</div>
+    </div>
+
+    <div class="info-card">
+      <h2><span class="icon-dot"></span>Riwayat Singkat</h2>
+      <ul class="riwayat-list">
+        <li><strong>Pendidikan</strong> — Pendidikan Fisika, Universitas Negeri Makassar (S-1)</li>
+        <li><strong>Pengalaman mengajar</strong> — SMPN 1 Sinjai Barat (2003–2005)</li>
+        <li><strong>Sertifikasi/pelatihan</strong> — Sertifikat Eligible MODULAR 2026</li>
+      </ul>
+    </div>
+
+    <div class="info-card">
+      <h2><span class="icon-dot"></span>Kontak</h2>
+      <div class="kontak-grid">
+        <div class="kontak-item">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#325366" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>
+            </svg>
+          </div>
+          <div>
+            <div class="label">Email</div>
+            <div class="value">hasishayyong@gmail.com</div>
+          </div>
+        </div>
+        <div class="kontak-item">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#325366" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
+            </svg>
+          </div>
+          <div>
+            <div class="label">Jam Konsultasi</div>
+            <div class="value">Senin & Rabu, 13.00–14.30</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="doc-section">
+  <div class="doc-inner">
+
+    <div class="doc-header">
+      <div class="doc-header-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#F3EFE3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>
+        </svg>
+      </div>
+      <div class="doc-header-text">
+        <h2>Dokumentasi Kegiatan</h2>
+        <p>Berbagai kegiatan pembelajaran, pelatihan, dan inovasi yang mendukung peningkatan kualitas pendidikan fisika.</p>
+      </div>
+    </div>
+
+    <div class="stats-row" id="statsRow"></div>
+    <div class="doc-grid" id="docGrid"></div>
+    <div class="timeline-line"></div>
+
+    <div class="values-row" id="valuesRow"></div>
+
+    <div class="quote-bar" id="quoteBar"></div>
+
+  </div>
+</section>
+
+<script>
+  // ======================================================
+  // DOKUMENTASI KEGIATAN
+  // - STATS   : angka ringkasan di bagian atas.
+  // - KEGIATAN: daftar kegiatan. "image" boleh diisi path PNG/JPG
+  //             (mis. 'images/kegiatan-1.jpg'), kosongkan ('')
+  //             untuk pakai ikon+gradien bawaan. "warna" menentukan
+  //             warna label kategori (kode hex).
+  // - NILAI   : empat nilai/komitmen di bagian bawah.
+  // - QUOTE   : kutipan penutup.
+  // ======================================================
+  const STATS = [
+    { num: '48+', label: 'Kegiatan', color: '#1F3B2E', icon: 'camera' },
+    { num: '15+', label: 'Workshop & Pelatihan', color: '#325366', icon: 'people' },
+    { num: '20+', label: 'Praktikum & Eksperimen', color: '#B8791F', icon: 'flask' },
+    { num: '10+', label: 'Prestasi & Penghargaan', color: '#8A5A16', icon: 'trophy' }
+  ];
+
+  const KEGIATAN = [
+    {
+      tanggal: '2026-07-24', kategori: 'PELATIHAN', warna: '#1F3B2E',
+      title: 'Pelatihan Pembuatan Gim Edukasi Berbasis Lumi Education',
+      desc: 'Berbagi praktik baik dalam mengembangkan gim edukasi interaktif untuk pembelajaran yang lebih menarik dan bermakna.',
+      lokasi: "Komunitas Belajar RIAL'10", image: ''
+    },
+    {
+      tanggal: '2026-07-18', kategori: 'INOVASI', warna: '#325366',
+      title: 'Pengembangan Physics Sense Lab',
+      desc: 'Mengembangkan alat bantu pembelajaran berbasis Arduino dan sensor untuk praktikum GLBB terintegrasi dashboard analisis data.',
+      lokasi: 'Lab. Fisika SMAN 10 Bulukumba', image: ''
+    },
+    {
+      tanggal: '2026-07-05', kategori: 'WORKSHOP', warna: '#6B4FA0',
+      title: 'Workshop AI untuk Guru',
+      desc: 'Mengikuti pelatihan pemanfaatan Artificial Intelligence dalam pembelajaran, asesmen, dan administrasi guru.',
+      lokasi: 'Lab. Bulukumba', image: ''
+    },
+    {
+      tanggal: '2026-06-10', kategori: 'PRAKTIKUM', warna: '#3E8E5C',
+      title: 'Praktikum Fisika Kelas XI',
+      desc: 'Peserta didik melakukan praktikum pengukuran dan analisis data sebagai penerapan konsep fisika melalui kegiatan eksperimen.',
+      lokasi: 'Lab. Fisika SMAN 10 Bulukumba', image: ''
+    },
+    {
+      tanggal: '2026-05-28', kategori: 'KEGIATAN SEKOLAH', warna: '#2E8C8C',
+      title: 'Program Sekolah Hijau dan Unik (SEJUK)',
+      desc: 'Kegiatan penanaman dan perawatan tanaman bersama siswa sebagai wujud kepedulian terhadap lingkungan sekolah.',
+      lokasi: 'SMAN 10 Bulukumba', image: ''
+    },
+    {
+      tanggal: '2026-05-15', kategori: 'PRESTASI', warna: '#B8791F',
+      title: 'Guru Penggerak Angkatan 11',
+      desc: 'Berkomitmen menjadi agen perubahan dan terus berinovasi untuk mewujudkan pembelajaran yang berpihak pada murid.',
+      lokasi: 'Kab. Bulukumba', image: ''
+    }
+    // Contoh menambah kegiatan baru:
+    // { tanggal: '2026-08-01', kategori: 'WORKSHOP', warna: '#6B4FA0', title: 'Judul kegiatan', desc: 'Deskripsi singkat.', lokasi: 'Lokasi', image: 'images/kegiatan-baru.jpg' },
+  ];
+
+  const NILAI = [
+    { title: 'Inovatif', desc: 'Mengembangkan ide dan media pembelajaran yang kreatif dan relevan.', icon: 'bulb' },
+    { title: 'Kolaboratif', desc: 'Bekerja bersama guru, siswa, dan komunitas untuk hasil yang lebih baik.', icon: 'people' },
+    { title: 'Eksperiensial', desc: 'Belajar melalui pengalaman langsung dan pemecahan masalah nyata.', icon: 'flask' },
+    { title: 'Berkelanjutan', desc: 'Terus belajar, berbagi, dan berkontribusi untuk pendidikan yang lebih baik.', icon: 'leaf' }
+  ];
+
+  const QUOTE = 'Belajar fisika bukan hanya tentang memahami alam, tetapi juga tentang menginspirasi generasi muda untuk mencintai ilmu dan menjadi pribadi yang bermanfaat.';
+
+  const ICONS = {
+    camera: '<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>',
+    people: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    flask: '<path d="M9 3h6M10 3v5l-5.5 9.5A2 2 0 0 0 6.2 20.5h11.6a2 2 0 0 0 1.7-3L14 8V3"/><path d="M7.5 15h9"/>',
+    trophy: '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3a2 2 0 0 1-2 4M7 5H4a2 2 0 0 0 2 4"/>',
+    bulb: '<path d="M9 18h6M10 22h4M12 2a6 6 0 0 0-4 10.5c.6.6 1 1.4 1 2.5h6c0-1.1.4-1.9 1-2.5A6 6 0 0 0 12 2z"/>',
+    leaf: '<path d="M5 21c8-1 13-6 14-14C10 8 5 13 5 21z"/>',
+    pin: '<path d="M12 21s7-6.5 7-11a7 7 0 0 0-14 0c0 4.5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>'
+  };
+
+  const BULAN = ['JAN','FEB','MAR','APR','MEI','JUN','JUL','AGU','SEP','OKT','NOV','DES'];
+
+  function renderStats(){
+    document.getElementById('statsRow').innerHTML = STATS.map(s => `
+      <div class="stat-card">
+        <div class="stat-icon" style="background:${s.color}22;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="${s.color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICONS[s.icon]}</svg>
+        </div>
+        <div>
+          <div class="stat-num" style="color:${s.color};">${s.num}</div>
+          <div class="stat-label">${s.label}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderKegiatan(){
+    document.getElementById('docGrid').innerHTML = KEGIATAN.map(k => {
+      const d = new Date(k.tanggal + 'T00:00:00');
+      return `
+        <div class="doc-card">
+          <div class="doc-thumb" style="background:linear-gradient(135deg, ${k.warna}, #1F3B2E);">
+            ${k.image ? `<img src="${k.image}" alt="${k.title}">` : `<svg viewBox="0 0 24 24" fill="none" stroke="#F3EFE3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${ICONS.camera}</svg>`}
+            <div class="doc-date"><div class="d">${d.getDate()}</div><div class="m">${BULAN[d.getMonth()]} ${d.getFullYear()}</div></div>
+          </div>
+          <div class="doc-body">
+            <span class="doc-tag" style="background:${k.warna};">${k.kategori}</span>
+            <h3>${k.title}</h3>
+            <p class="desc">${k.desc}</p>
+            <div class="doc-loc"><svg viewBox="0 0 24 24" fill="none" stroke="#5B6350" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICONS.pin}</svg>${k.lokasi}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderValues(){
+    document.getElementById('valuesRow').innerHTML = `
+      <div class="values-lead">
+        <div class="icon-circle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#325366" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.3" fill="#325366"/>
+          </svg>
+        </div>
+        <div>
+          <h3>Komitmen untuk Terus Berkarya</h3>
+          <p>Setiap kegiatan adalah langkah kecil untuk menciptakan pembelajaran fisika yang bermakna, inovatif, dan menyenangkan.</p>
+        </div>
+      </div>
+      ${NILAI.map(n => `
+        <div class="value-item">
+          <div class="icon-circle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#325366" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICONS[n.icon]}</svg>
+          </div>
+          <h4>${n.title}</h4>
+          <p>${n.desc}</p>
+        </div>
+      `).join('')}
+    `;
+  }
+
+  function renderQuote(){
+    document.getElementById('quoteBar').innerHTML = `&ldquo;${QUOTE}&rdquo; <span>— Fisikita</span>`;
+  }
+
+  renderStats();
+  renderKegiatan();
+  renderValues();
+  renderQuote();
+</script>
+
+<footer>© 2026 Fisikita — SMAN 10 Bulukumba</footer>
+
+</body>
+</html>
