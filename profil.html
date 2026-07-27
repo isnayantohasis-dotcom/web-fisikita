@@ -126,7 +126,29 @@
   }
   .doc-thumb{height:130px; position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden;}
   .doc-thumb img{width:100%; height:100%; object-fit:cover;}
+  .doc-thumb.clickable{cursor:pointer;}
   .doc-thumb svg{width:30px; height:30px; opacity:.85;}
+
+  /* LIGHTBOX FOTO DOKUMENTASI */
+  .lightbox-overlay{
+    position:fixed; inset:0; background:rgba(21,42,32,0.85); z-index:250;
+    display:none; align-items:center; justify-content:center; padding:24px;
+  }
+  .lightbox-overlay.active{display:flex;}
+  .lightbox-box{
+    position:relative; max-width:min(90vw, 900px); max-height:85vh; background:#000;
+    border-radius:14px; overflow:hidden; display:flex;
+  }
+  .lightbox-box.fs-fallback{max-width:100vw; max-height:100vh; width:100vw; height:100vh; border-radius:0;}
+  .lightbox-box img{max-width:100%; max-height:85vh; display:block; margin:auto;}
+  .lightbox-box.fs-fallback img{max-height:100vh; width:100%; height:100%; object-fit:contain;}
+  .lightbox-actions{position:absolute; top:12px; right:12px; display:flex; gap:8px; z-index:2;}
+  .lightbox-actions button{
+    background:rgba(21,42,32,0.75); border:1px solid rgba(243,239,227,0.3); color:var(--chalk);
+    border-radius:7px; width:36px; height:36px; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; font-size:1rem;
+  }
+  .lightbox-actions button svg{width:16px; height:16px;}
   .doc-date{
     position:absolute; left:10px; top:10px; background:var(--board-dark); color:var(--chalk);
     border-radius:8px; padding:5px 9px; text-align:center; line-height:1.15;
@@ -413,7 +435,7 @@
       const d = new Date(k.tanggal + 'T00:00:00');
       return `
         <div class="doc-card">
-          <div class="doc-thumb" style="background:linear-gradient(135deg, ${k.warna}, #1F3B2E);">
+          <div class="doc-thumb ${k.image ? 'clickable' : ''}" style="background:linear-gradient(135deg, ${k.warna}, #1F3B2E);" ${k.image ? `onclick="openLightbox('${k.image}', '${k.title.replace(/'/g, "\\'")}')"` : ''}>
             ${k.image ? `<img src="${k.image}" alt="${k.title}">` : `<svg viewBox="0 0 24 24" fill="none" stroke="#F3EFE3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${ICONS.camera}</svg>`}
             <div class="doc-date"><div class="d">${d.getDate()}</div><div class="m">${BULAN[d.getMonth()]} ${d.getFullYear()}</div></div>
           </div>
@@ -459,6 +481,58 @@
 
   renderStats();
   renderKegiatan();
+
+  // ======================================================
+  // LIGHTBOX FOTO DOKUMENTASI — klik foto untuk memperbesar,
+  // bisa diperluas ke layar penuh (Fullscreen API + fallback CSS)
+  // ======================================================
+  function openLightbox(src, title){
+    let lb = document.getElementById('lightboxOverlay');
+    if(!lb){
+      lb = document.createElement('div');
+      lb.className = 'lightbox-overlay';
+      lb.id = 'lightboxOverlay';
+      lb.innerHTML = `
+        <div class="lightbox-box" id="lightboxBox">
+          <div class="lightbox-actions">
+            <button id="lightboxExpand" aria-label="Perluas ke layar penuh">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+            </button>
+            <button id="lightboxClose" aria-label="Tutup">✕</button>
+          </div>
+          <img id="lightboxImg" src="" alt="">
+        </div>`;
+      document.body.appendChild(lb);
+
+      const lbBox = document.getElementById('lightboxBox');
+      document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+      lb.addEventListener('click', (e) => { if(e.target === lb) closeLightbox(); });
+      document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeLightbox(); });
+      document.getElementById('lightboxExpand').addEventListener('click', () => {
+        const reqFs = lbBox.requestFullscreen || lbBox.webkitRequestFullscreen || lbBox.msRequestFullscreen;
+        if(document.fullscreenElement === lbBox){
+          (document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen).call(document);
+        } else if(!document.fullscreenElement && reqFs){
+          reqFs.call(lbBox);
+        } else {
+          lbBox.classList.toggle('fs-fallback');
+        }
+      });
+      document.addEventListener('fullscreenchange', () => {
+        if(!document.fullscreenElement) lbBox.classList.remove('fs-fallback');
+      });
+    }
+    document.getElementById('lightboxImg').src = src;
+    document.getElementById('lightboxImg').alt = title;
+    lb.classList.add('active');
+  }
+  function closeLightbox(){
+    const lb = document.getElementById('lightboxOverlay');
+    if(document.fullscreenElement){
+      (document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen).call(document);
+    }
+    if(lb) lb.classList.remove('active');
+  }
   renderValues();
   renderQuote();
 </script>

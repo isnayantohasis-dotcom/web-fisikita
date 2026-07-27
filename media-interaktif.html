@@ -231,12 +231,29 @@
     overlay.classList.add('active');
   }
   function closeModal(){
+    if(document.fullscreenElement){
+      (document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen).call(document);
+    }
     overlay.classList.remove('active');
     body.innerHTML = '';
   }
   expandBtn.addEventListener('click', () => {
-    box.classList.toggle('expanded');
-    expandBtn.textContent = box.classList.contains('expanded') ? 'Perkecil' : 'Perluas';
+    const reqFs = box.requestFullscreen || box.webkitRequestFullscreen || box.msRequestFullscreen;
+    if(!document.fullscreenElement && reqFs){
+      reqFs.call(box);
+    } else {
+      box.classList.toggle('expanded');
+      expandBtn.textContent = box.classList.contains('expanded') ? 'Perkecil' : 'Perluas';
+    }
+  });
+  document.addEventListener('fullscreenchange', () => {
+    if(document.fullscreenElement === box){
+      box.classList.add('expanded');
+      expandBtn.textContent = 'Perkecil';
+    } else if(!document.fullscreenElement){
+      box.classList.remove('expanded');
+      expandBtn.textContent = 'Perluas';
+    }
   });
   document.getElementById('closeBtn').addEventListener('click', closeModal);
   overlay.addEventListener('click', (e) => { if(e.target === overlay) closeModal(); });
