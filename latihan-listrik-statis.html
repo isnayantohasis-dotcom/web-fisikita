@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latihan: Listrik Statis — Fisikita</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --board:#1F3B2E; --board-dark:#152A20; --chalk:#F3EFE3; --chalk-dim:#B9C4B7;
+    --paper:#F1EEDF; --paper-card:#FFFFFF; --ink:#26301F; --ink-soft:#5B6350;
+    --amber:#E8A33D; --amber-dark:#8A5A16; --blue:#6E9FB0; --blue-soft:#93C9DE;
+    --blue-dark:#325366; --line:#E4E0D0;
+    --green-ok:#2F8F5B; --green-ok-tint:#E7F5EC; --red-no:#C1483F; --red-no-tint:#FBEAE8;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:'Plus Jakarta Sans', sans-serif; background:var(--paper); color:var(--ink); line-height:1.6;}
+  .mono{font-family:'JetBrains Mono', monospace;}
+
+  header.nav{position:fixed; top:0; left:0; right:0; z-index:50; background:var(--board); border-bottom:3px solid var(--board-dark);}
+  .nav-inner{max-width:1100px; margin:0 auto; padding:16px 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;}
+  .brand{color:var(--chalk); font-weight:700; font-size:1.15rem; display:flex; align-items:center; gap:10px; text-decoration:none;}
+  nav.links a{color:var(--chalk-dim); text-decoration:none; font-size:.92rem; font-weight:500;}
+  nav.links a:hover{color:var(--amber);}
+
+  .page-head-wrap{padding:36px 24px 0;}
+  .page-head{
+    max-width:900px; margin:0 auto; border-radius:26px; overflow:hidden; position:relative;
+    background:linear-gradient(120deg, var(--board) 0%, var(--blue-dark) 100%);
+    color:var(--chalk); padding:36px 36px; box-shadow:0 20px 40px rgba(31,59,46,0.16);
+  }
+  .page-head::after{content:""; position:absolute; right:-50px; top:-50px; width:180px; height:180px; border-radius:50%; background:rgba(255,255,255,0.07);}
+  .page-head .tag{
+    font-family:'JetBrains Mono', monospace; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase;
+    background:rgba(255,255,255,0.14); color:var(--chalk); display:inline-block; padding:5px 13px;
+    border-radius:20px; margin-bottom:12px; position:relative;
+  }
+  .page-head h1{font-size:1.8rem; font-weight:800; margin-bottom:8px; position:relative;}
+  .page-head p{color:rgba(243,239,227,0.85); font-size:.92rem; position:relative;}
+  .page-head .meta-row{display:flex; gap:14px; flex-wrap:wrap; margin-top:14px; position:relative; font-size:.8rem; color:var(--chalk-dim);}
+
+  section{padding:36px 24px 80px;}
+  .quiz-inner{max-width:900px; margin:0 auto;}
+
+  .score-panel{
+    display:none; background:var(--paper-card); border:1px solid var(--line); border-radius:18px;
+    padding:26px 28px; margin-bottom:26px; box-shadow:0 6px 18px rgba(31,59,46,0.08); text-align:center;
+  }
+  .score-panel.show{display:block;}
+  .score-num{font-size:2.6rem; font-weight:800; color:var(--board);}
+  .score-num span{font-size:1.2rem; color:var(--ink-soft); font-weight:600;}
+  .score-msg{font-family:'Kalam', cursive; font-size:1.15rem; color:var(--blue-dark); margin-top:8px; max-width:56ch; margin-left:auto; margin-right:auto;}
+  .score-sub{font-size:.88rem; color:var(--ink-soft); margin-top:8px;}
+
+  .q-card{
+    background:var(--paper-card); border:1px solid var(--line); border-radius:16px;
+    padding:22px 24px; margin-bottom:18px; box-shadow:0 3px 10px rgba(31,59,46,0.05);
+    transition:border-color .2s, background .2s;
+  }
+  .q-card.correct{border-color:var(--green-ok); background:var(--green-ok-tint);}
+  .q-card.incorrect{border-color:var(--red-no); background:var(--red-no-tint);}
+  .q-top{display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap;}
+  .q-num{
+    width:28px; height:28px; border-radius:50%; background:var(--board); color:var(--chalk);
+    display:flex; align-items:center; justify-content:center; font-size:.82rem; font-weight:700; flex-shrink:0;
+  }
+  .level-chip{
+    font-family:'JetBrains Mono', monospace; font-size:.68rem; letter-spacing:.03em; text-transform:uppercase;
+    padding:3px 10px; border-radius:20px; font-weight:600;
+  }
+  .level-mudah{background:#E3EDF0; color:var(--blue-dark);}
+  .level-sedang{background:#FBF0DD; color:var(--amber-dark);}
+  .level-sulit{background:#F7DEDC; color:#9B4239;}
+  .q-text{font-size:.98rem; font-weight:600; margin-bottom:14px; line-height:1.5;}
+
+  .opt-list{display:flex; flex-direction:column; gap:8px;}
+  .opt-item{
+    display:flex; align-items:center; gap:10px; padding:10px 14px; border:1px solid var(--line);
+    border-radius:10px; cursor:pointer; font-size:.9rem; transition:background .15s, border-color .15s;
+  }
+  .opt-item:hover{background:#F6F4EA;}
+  .opt-item input{accent-color:var(--board); width:16px; height:16px; flex-shrink:0;}
+  .opt-item.opt-correct{border-color:var(--green-ok); background:var(--green-ok-tint); font-weight:600;}
+  .opt-item.opt-wrong-pick{border-color:var(--red-no); background:var(--red-no-tint);}
+
+  .isian-input{
+    width:100%; max-width:280px; padding:10px 14px; border:1px solid var(--line); border-radius:10px;
+    font-size:.95rem; font-family:'JetBrains Mono', monospace;
+  }
+  .isian-input:disabled{background:#F6F4EA;}
+
+  .explain{
+    margin-top:14px; padding:12px 14px; border-radius:10px; background:#F6F4EA;
+    font-size:.85rem; color:var(--ink-soft); display:none;
+  }
+  .explain.show{display:block;}
+  .explain strong{color:var(--ink);}
+
+  .submit-row{display:flex; justify-content:center; gap:12px; margin-top:10px; flex-wrap:wrap;}
+  .btn{
+    display:inline-block; padding:13px 28px; border-radius:8px; font-weight:700; font-size:.92rem;
+    cursor:pointer; border:none; font-family:inherit;
+  }
+  .btn-primary{background:var(--amber); color:var(--board-dark);}
+  .btn-primary:hover{background:#D9922E;}
+  .btn-ghost{background:transparent; border:1.5px solid var(--line); color:var(--ink);}
+  .btn-ghost:hover{border-color:var(--board);}
+
+  footer{background:var(--board-dark); color:var(--chalk-dim); padding:30px 24px; text-align:center; font-size:.85rem;}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <svg width="30" height="30" viewBox="0 0 130 130" style="flex-shrink:0;">
+        <circle cx="65" cy="30" r="3.2" fill="#F3EFE3"/><circle cx="41" cy="83" r="3.5" fill="#F3EFE3" opacity="0.2"/>
+        <circle cx="53" cy="87" r="4" fill="#F3EFE3" opacity="0.35"/><circle cx="65" cy="88.5" r="4.5" fill="#F3EFE3" opacity="0.55"/>
+        <circle cx="75" cy="87.7" r="5" fill="#F3EFE3" opacity="0.78"/>
+        <line x1="65" y1="30" x2="84" y2="86" stroke="#F3EFE3" stroke-width="2.4" stroke-linecap="round"/>
+        <circle cx="84" cy="86" r="9" fill="#E8A33D"/>
+      </svg>
+      Fisikita <span class="mono" style="font-size:.75rem;color:var(--chalk-dim);font-weight:400;">· SMAN 10 Bulukumba</span>
+    </a>
+    <nav class="links"><a href="index.html#latihan">← Kembali ke Latihan</a></nav>
+  </div>
+</header>
+<script>
+  (function(){
+    function adjustHeaderSpacing(){
+      var header = document.querySelector('header.nav');
+      if(header){ document.body.style.paddingTop = header.offsetHeight + 'px'; }
+    }
+    adjustHeaderSpacing();
+    window.addEventListener('resize', adjustHeaderSpacing);
+  })();
+</script>
+
+<div class="page-head-wrap">
+  <div class="page-head">
+    <span class="tag">Kelas XII · Listrik Statis</span>
+    <h1>Latihan: Listrik Statis</h1>
+    <p>10 soal campuran (pilihan ganda, benar-salah, isian) dari yang gampang sampai yang bikin mikir. Jawab semua, lalu klik "Cek Jawaban" di bagian bawah buat lihat skor dan pembahasannya.</p>
+    <div class="meta-row"><span>📝 10 soal</span><span>⏱️ ±20 menit</span><span>🎯 Tingkat: campuran</span></div>
+  </div>
+</div>
+
+<section>
+  <div class="quiz-inner">
+
+    <div class="score-panel" id="scorePanel">
+      <div class="score-num" id="scoreNum">0<span>/100</span></div>
+      <div class="score-msg" id="scoreMsg"></div>
+      <div class="score-sub" id="scoreSub"></div>
+    </div>
+
+    <div id="questionList"></div>
+
+    <div class="submit-row">
+      <button class="btn btn-primary" id="submitBtn">Cek Jawaban</button>
+      <button class="btn btn-ghost" id="retryBtn" style="display:none;">Coba Lagi</button>
+    </div>
+
+  </div>
+</section>
+
+<footer>© 2026 Fisikita — SMAN 10 Bulukumba</footer>
+
+<script>
+  // ======================================================
+  // BANK SOAL — LISTRIK STATIS
+  // type: 'mcq' (pilihan ganda), 'tf' (benar/salah), 'isian' (jawaban singkat)
+  // level: 'Mudah' | 'Sedang' | 'Sulit'
+  // Untuk soal isian, "correct" bisa berupa array berisi variasi
+  // jawaban yang diterima (misalnya beda format koma/titik).
+  // ======================================================
+  const QUESTIONS = [
+    {
+      type: 'mcq', level: 'Mudah',
+      text: '1. Sebuah benda dikatakan bermuatan listrik negatif apabila benda tersebut...',
+      options: ['Kelebihan elektron', 'Kekurangan elektron', 'Kelebihan proton', 'Kekurangan proton', 'Jumlah proton sama dengan elektron'],
+      correct: 0,
+      explain: 'Benda bermuatan negatif karena jumlah elektronnya (partikel bermuatan negatif) lebih banyak daripada protonnya.'
+    },
+    {
+      type: 'tf', level: 'Mudah',
+      text: '2. Pernyataan: "Muatan listrik yang sejenis akan tarik-menarik, sedangkan muatan yang berlawanan jenis akan tolak-menolak." Apakah pernyataan ini benar?',
+      options: ['Benar', 'Salah'],
+      correct: 1,
+      explain: 'Justru sebaliknya — muatan sejenis (misalnya + dan +) akan tolak-menolak, sedangkan muatan berlawanan jenis (+ dan −) akan tarik-menarik.'
+    },
+    {
+      type: 'mcq', level: 'Sedang',
+      text: '3. Dua muatan listrik masing-masing +4 μC dan +9 μC terpisah sejauh 3 cm. Jika k = 9×10⁹ N·m²/C², besar gaya Coulomb antara keduanya adalah...',
+      options: ['36 N', '180 N', '360 N', '720 N', '3600 N'],
+      correct: 2,
+      explain: 'F = k·q₁·q₂/r² = (9×10⁹ × 4×10⁻⁶ × 9×10⁻⁶) / (0,03)² = 360 N. Ingat, jarak harus diubah ke meter dulu (3 cm = 0,03 m) sebelum dikuadratkan.'
+    },
+    {
+      type: 'isian', level: 'Sedang',
+      text: '4. Sebuah muatan uji +2 μC berada dalam medan listrik sebesar 5×10⁴ N/C. Besar gaya listrik yang dialami muatan tersebut adalah ... N. (tulis angkanya saja)',
+      correct: ['0.1', '0,1', '0.10', '0,10'],
+      explain: 'F = q·E = 2×10⁻⁶ × 5×10⁴ = 0,1 N. Rumus ini beda dengan hukum Coulomb — dipakai saat sudah tahu besar medan listriknya (E), bukan muatan sumbernya.'
+    },
+    {
+      type: 'mcq', level: 'Mudah',
+      text: '5. Arah medan listrik di sekitar sebuah muatan positif adalah...',
+      options: ['Menuju ke muatan', 'Menjauhi muatan (radial keluar)', 'Sejajar dengan permukaan muatan', 'Memutari muatan', 'Tidak memiliki arah tertentu'],
+      correct: 1,
+      explain: 'Garis medan listrik selalu keluar dari muatan positif dan masuk menuju muatan negatif — bayangkan seperti duri landak yang mengarah keluar dari pusatnya.'
+    },
+    {
+      type: 'mcq', level: 'Sulit',
+      text: '6. Besar medan listrik pada jarak 2 cm dari sebuah muatan titik +8 μC adalah... (k = 9×10⁹ N·m²/C²)',
+      options: ['1,8×10⁶ N/C', '1,8×10⁷ N/C', '1,8×10⁸ N/C', '1,8×10⁹ N/C', '1,8×10¹⁰ N/C'],
+      correct: 2,
+      explain: 'E = k·q/r² = (9×10⁹ × 8×10⁻⁶) / (0,02)² = 1,8×10⁸ N/C. Jarak 2 cm harus diubah ke 0,02 m dulu, dan jangan lupa dikuadratkan sebelum membagi.'
+    },
+    {
+      type: 'mcq', level: 'Sulit',
+      text: '7. Dua muatan titik masing-masing q₁ = +2 μC dan q₂ = −2 μC dipisahkan sejauh 20 cm. Sebuah muatan uji diletakkan tepat di tengah-tengah kedua muatan tersebut. Jika k = 9×10⁹ N·m²/C², besar kuat medan listrik total di titik tersebut adalah...',
+      options: ['0 N/C (saling meniadakan)', '0,9×10⁶ N/C', '1,8×10⁶ N/C', '3,6×10⁶ N/C', '7,2×10⁶ N/C'],
+      correct: 3,
+      explain: 'Karena titik uji berada di antara dua muatan yang berlawanan jenis, medan listrik akibat q₁ (mengarah menjauhi q₁) dan akibat q₂ (mengarah menuju q₂) sama-sama mengarah dari q₁ ke q₂ — jadi keduanya SALING MENJUMLAHKAN, bukan saling meniadakan (beda dengan kalau kedua muatan sejenis). E₁ = E₂ = k|q|/r² = (9×10⁹ × 2×10⁻⁶)/(0,1)² = 1,8×10⁶ N/C, sehingga E_total = E₁ + E₂ = 3,6×10⁶ N/C.'
+    },
+    {
+      type: 'mcq', level: 'Sedang',
+      text: '8. Dua kapasitor disusun seri, masing-masing berkapasitas 4 μF dan 12 μF, lalu dihubungkan ke sumber tegangan 100 V. Besar energi yang tersimpan pada rangkaian kapasitor tersebut adalah...',
+      options: ['0,5×10⁻² J', '1,0×10⁻² J', '1,5×10⁻² J', '3,0×10⁻² J', '6,0×10⁻² J'],
+      correct: 2,
+      explain: 'Langkah 1 — cari dulu kapasitas penggantinya: untuk rangkaian seri, 1/Cs = 1/C₁ + 1/C₂ = 1/4 + 1/12 = 4/12, sehingga Cs = 3 μF = 3×10⁻⁶ F. Langkah 2 — hitung energinya: W = ½·Cs·V² = ½ × 3×10⁻⁶ × (100)² = ½ × 3×10⁻⁶ × 10.000 = 1,5×10⁻² J (setara 15 mJ).'
+    },
+    {
+      type: 'isian', level: 'Sulit',
+      text: '9. Potensial listrik pada jarak 5 cm dari muatan titik +2 μC adalah ... ×10⁵ V. (k = 9×10⁹ N·m²/C², tulis angka di depan ×10⁵ saja, misal: 3.6)',
+      correct: ['3.6', '3,6'],
+      explain: 'V = k·q/r = (9×10⁹ × 2×10⁻⁶) / 0,05 = 3,6×10⁵ V. Beda dengan medan listrik (E), potensial listrik (V) tidak dikuadratkan pada penyebutnya.'
+    },
+    {
+      type: 'mcq', level: 'Sulit',
+      text: '10. Sebuah kapasitor keping sejajar terhubung ke sumber tegangan tetap. Jika jarak antar keping diperbesar dua kali sementara luas keping dan tegangannya tetap, maka energi yang tersimpan pada kapasitor akan...',
+      options: ['Tetap sama', 'Menjadi dua kali lipat', 'Menjadi empat kali lipat', 'Menjadi setengah kali', 'Menjadi seperempat kali'],
+      correct: 3,
+      explain: 'C = ε₀A/d, jadi kalau jarak (d) diperbesar dua kali, kapasitansi (C) jadi setengahnya. Karena energi W = ½CV² dan tegangan (V) tetap, energi ikut turun jadi setengah kali semula.'
+    }
+  ];
+
+  function renderQuestions(){
+    const list = document.getElementById('questionList');
+    list.innerHTML = QUESTIONS.map((q, i) => {
+      const levelClass = q.level === 'Mudah' ? 'level-mudah' : q.level === 'Sedang' ? 'level-sedang' : 'level-sulit';
+      let body = '';
+      if(q.type === 'isian'){
+        body = `<input type="text" class="isian-input" id="q${i}" placeholder="Tulis jawabanmu di sini">`;
+      } else {
+        body = `<div class="opt-list" id="q${i}">` + q.options.map((opt, oi) => `
+          <label class="opt-item" data-oi="${oi}">
+            <input type="radio" name="q${i}" value="${oi}">
+            <span>${opt}</span>
+          </label>
+        `).join('') + `</div>`;
+      }
+      return `
+        <div class="q-card" id="qcard${i}">
+          <div class="q-top">
+            <span class="q-num">${i+1}</span>
+            <span class="level-chip ${levelClass}">${q.level}</span>
+          </div>
+          <div class="q-text">${q.text.replace(/^\d+\.\s/, '')}</div>
+          ${body}
+          <div class="explain" id="explain${i}"><strong>Pembahasan:</strong> ${q.explain}</div>
+        </div>
+      `;
+    }).join('');
+  }
+  renderQuestions();
+
+  function normalizeIsian(v){
+    return v.trim().toLowerCase().replace(/\s+/g, '');
+  }
+
+  function checkAnswers(){
+    let score = 0;
+    QUESTIONS.forEach((q, i) => {
+      const card = document.getElementById('qcard' + i);
+      let isCorrect = false;
+
+      if(q.type === 'isian'){
+        const input = document.getElementById('q' + i);
+        input.disabled = true;
+        const userVal = normalizeIsian(input.value || '');
+        isCorrect = q.correct.some(c => normalizeIsian(c) === userVal);
+      } else {
+        const checked = document.querySelector(`input[name="q${i}"]:checked`);
+        const userIdx = checked ? parseInt(checked.value) : -1;
+        isCorrect = userIdx === q.correct;
+        document.querySelectorAll(`#q${i} .opt-item`).forEach(el => {
+          const oi = parseInt(el.dataset.oi);
+          el.querySelector('input').disabled = true;
+          if(oi === q.correct) el.classList.add('opt-correct');
+          if(oi === userIdx && userIdx !== q.correct) el.classList.add('opt-wrong-pick');
+        });
+      }
+
+      card.classList.add(isCorrect ? 'correct' : 'incorrect');
+      document.getElementById('explain' + i).classList.add('show');
+      if(isCorrect) score += 10;
+    });
+
+    showScore(score);
+    document.getElementById('submitBtn').style.display = 'none';
+    document.getElementById('retryBtn').style.display = 'inline-block';
+    document.getElementById('scorePanel').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function showScore(score){
+    const panel = document.getElementById('scorePanel');
+    document.getElementById('scoreNum').innerHTML = score + '<span>/100</span>';
+
+    let msg, sub;
+    if(score >= 90){
+      msg = 'Mantap, kamu jagoan Listrik Statis! ⚡';
+      sub = 'Konsep dan hitungannya udah kamu kuasai dengan baik. Boleh coba materi berikutnya, atau bantu temanmu yang masih bingung.';
+    } else if(score >= 70){
+      msg = 'Udah bagus, tinggal dikit lagi mantap! 👍';
+      sub = 'Sebagian besar konsep sudah kepegang. Coba baca ulang pembahasan soal yang salah tadi, biar makin yakin.';
+    } else if(score >= 50){
+      msg = 'Lumayan, tapi masih ada yang perlu dirapikan. 📘';
+      sub = 'Beberapa konsep dasar Listrik Statis kayaknya masih perlu diulang. Coba buka lagi materinya, terus latihan sekali lagi ya.';
+    } else {
+      msg = 'Santai, ini baru permulaan. Yuk coba lagi! 💪';
+      sub = 'Wajar kok kalau masih banyak yang meleset — namanya juga belajar. Baca pelan-pelan pembahasan tiap soal di atas, terus coba ulang kuisnya.';
+    }
+    document.getElementById('scoreMsg').textContent = msg;
+    document.getElementById('scoreSub').textContent = sub;
+    panel.classList.add('show');
+  }
+
+  document.getElementById('submitBtn').addEventListener('click', checkAnswers);
+  document.getElementById('retryBtn').addEventListener('click', () => location.reload());
+</script>
+
+</body>
+</html>

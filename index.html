@@ -201,16 +201,24 @@
   }
 
   /* LATIHAN */
-  .quiz-row{display:grid; grid-template-columns:repeat(2,1fr); gap:22px;}
+  .quiz-row{display:grid; grid-template-columns:repeat(4,1fr); gap:16px;}
   .quiz-card{
-    background:var(--board); color:var(--chalk); border-radius:10px; padding:26px;
-    position:relative; overflow:hidden;
+    background:var(--board); color:var(--chalk); border-radius:10px; padding:18px;
+    position:relative; overflow:hidden; text-decoration:none; display:block;
+    transition:transform .15s, box-shadow .15s; border:1px solid rgba(255,255,255,0.06);
+  }
+  .quiz-card:hover{transform:translateY(-3px); box-shadow:0 12px 24px rgba(31,59,46,0.18);}
+  .quiz-card .kelas-chip{
+    font-family:'JetBrains Mono', monospace; font-size:.68rem; letter-spacing:.04em;
+    background:rgba(255,255,255,0.1); color:var(--amber); display:inline-block;
+    padding:3px 9px; border-radius:20px; margin-bottom:10px;
   }
   .quiz-card .qn{
-    font-family:'Kalam', cursive; color:var(--amber); font-size:1.4rem; margin-bottom:6px;
+    font-family:'Kalam', cursive; color:var(--chalk); font-size:1.08rem; margin-bottom:6px; line-height:1.25;
   }
-  .quiz-card p{color:var(--chalk-dim); font-size:.92rem; margin-bottom:16px;}
-  .quiz-card .meta{font-family:'JetBrains Mono', monospace; font-size:.78rem; color:var(--chalk-dim); display:flex; gap:16px;}
+  .quiz-card p{color:var(--chalk-dim); font-size:.8rem; margin-bottom:12px; line-height:1.45;}
+  .quiz-card .meta{font-family:'JetBrains Mono', monospace; font-size:.7rem; color:var(--chalk-dim); display:flex; gap:5px; flex-wrap:wrap; align-items:center;}
+  .quiz-card .meta span:not(:last-child)::after{content:"·"; margin-left:5px; opacity:.6;}
 
   /* SUMBER BELAJAR */
   .resource-card{
@@ -272,11 +280,17 @@
     font-size:.8rem; color:#7C8A7C; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
   }
 
+  @media(max-width:900px){
+    .quiz-row{grid-template-columns:repeat(2,1fr);}
+  }
   @media(max-width:840px){
     .hero-inner{grid-template-columns:1fr;}
-    .grid-3, .quiz-row, .blog-grid{grid-template-columns:1fr;}
+    .grid-3, .blog-grid{grid-template-columns:1fr;}
     .footer-inner{grid-template-columns:1fr;}
     .hero h1{font-size:2rem;}
+  }
+  @media(max-width:480px){
+    .quiz-row{grid-template-columns:1fr;}
   }
   @media (prefers-reduced-motion: reduce){
     * {animation:none !important; transition:none !important;}
@@ -365,20 +379,9 @@
     <div class="section-head">
       <span class="tag">uji pemahaman</span>
       <h2>Latihan &amp; bank soal</h2>
-      <p>Kerjakan langsung di kelas atau untuk latihan mandiri di rumah.</p>
+      <p>Kerjakan langsung di kelas atau untuk latihan mandiri di rumah. Diurutkan per sub-unit materi.</p>
     </div>
-    <div class="quiz-row">
-      <div class="quiz-card">
-        <div class="qn">Kuis Kinematika</div>
-        <p>10 soal pilihan ganda tentang GLB, GLBB, dan gerak vertikal.</p>
-        <div class="meta"><span>10 soal</span><span>15 menit</span><span>Kelas X</span></div>
-      </div>
-      <div class="quiz-card">
-        <div class="qn">Bank Soal Persiapan UTBK</div>
-        <p>Kumpulan soal fisika lintas topik, tingkat kesulitan bertahap.</p>
-        <div class="meta"><span>40 soal</span><span>Terbuka</span><span>Kelas XII</span></div>
-      </div>
-    </div>
+    <div class="quiz-row" id="latihanGrid"></div>
   </div>
 </section>
 
@@ -518,6 +521,48 @@
   initWaveTitle();
 
   // ======================================================
+  // DAFTAR LATIHAN & BANK SOAL
+  // Satu kartu per sub-unit materi. "href" diisi link soal aslinya
+  // (Google Form, Quizizz, dll) — dibuka di tab baru. Kosongkan ('')
+  // kalau belum siap, kartu tetap tampil tapi menuju halaman Materi
+  // kelas terkait sebagai gantinya.
+  // ======================================================
+  const LATIHAN = [
+    { kelas: 'KELAS X', judul: 'Besaran & Pengukuran', desc: 'Latihan konversi satuan dan angka penting.', jumlah: '10 soal', waktu: '15 menit', href: '', fallback: 'materi-kelas-x.html' },
+    { kelas: 'KELAS X', judul: 'Kinematika Gerak Lurus', desc: 'Soal GLB, GLBB, dan gerak vertikal.', jumlah: '10 soal', waktu: '15 menit', href: '', fallback: 'materi-kelas-x.html' },
+    { kelas: 'KELAS X', judul: 'Gerak Melingkar', desc: 'Latihan kecepatan sudut dan percepatan sentripetal.', jumlah: '8 soal', waktu: '10 menit', href: '', fallback: 'materi-kelas-x.html' },
+    { kelas: 'KELAS X', judul: 'Hukum Newton', desc: 'Soal penerapan tiga hukum Newton.', jumlah: '10 soal', waktu: '15 menit', href: '', fallback: 'materi-kelas-x.html' },
+    { kelas: 'KELAS XI', judul: 'Usaha & Energi', desc: 'Latihan usaha, energi kinetik, dan potensial.', jumlah: '10 soal', waktu: '15 menit', href: '', fallback: 'materi-kelas-xi.html' },
+    { kelas: 'KELAS XI', judul: 'Momentum & Tumbukan', desc: 'Soal kekekalan momentum dan jenis tumbukan.', jumlah: '8 soal', waktu: '10 menit', href: '', fallback: 'materi-kelas-xi.html' },
+    { kelas: 'KELAS XI', judul: 'Getaran & Gelombang', desc: 'Latihan periode, frekuensi, dan cepat rambat.', jumlah: '10 soal', waktu: '15 menit', href: '', fallback: 'materi-kelas-xi.html' },
+    { kelas: 'KELAS XI', judul: 'Fluida Statis & Dinamis', desc: 'Soal tekanan hidrostatis dan hukum Bernoulli.', jumlah: '8 soal', waktu: '10 menit', href: '', fallback: 'materi-kelas-xi.html' },
+    { kelas: 'KELAS XII', judul: 'Listrik Statis', desc: 'Latihan hukum Coulomb, medan & potensial listrik.', jumlah: '10 soal', waktu: '±20 menit', href: 'latihan-listrik-statis.html', fallback: 'materi-kelas-xii.html' },
+    { kelas: 'KELAS XII', judul: 'Listrik Dinamis', desc: 'Hukum Ohm, rangkaian, Kirchhoff, dan energi listrik.', jumlah: '10 soal', waktu: '±25 menit', href: 'latihan-listrik-dinamis.html', fallback: 'materi-kelas-xii.html' },
+    { kelas: 'KELAS XII', judul: 'Medan & Induksi Magnet', desc: 'Gaya Lorentz, GGL induksi, Hukum Lenz, dan transformator.', jumlah: '10 soal', waktu: '±25 menit', href: 'latihan-medan-magnet.html', fallback: 'materi-kelas-xii.html' },
+    { kelas: 'KELAS XII', judul: 'Fisika Inti', desc: 'Latihan peluruhan radioaktif dan waktu paruh.', jumlah: '8 soal', waktu: '10 menit', href: '', fallback: 'materi-kelas-xii.html' },
+    { kelas: 'KELAS XII', judul: 'Bank Soal Persiapan UTBK', desc: 'Kumpulan soal lintas topik, tingkat bertahap.', jumlah: '40 soal', waktu: 'Terbuka', href: 'latihan-utbk.html', fallback: 'materi-kelas-xii.html' }
+    // Contoh menambah latihan baru:
+    // { kelas: 'KELAS X', judul: 'Judul latihan', desc: 'Deskripsi singkat.', jumlah: '10 soal', waktu: '15 menit', href: 'https://link-google-form-anda.com', fallback: 'materi-kelas-x.html' },
+  ];
+
+  function renderLatihan(){
+    const grid = document.getElementById('latihanGrid');
+    grid.innerHTML = LATIHAN.map(item => {
+      const link = item.href || item.fallback;
+      const external = item.href && /^https?:\/\//.test(item.href);
+      return `
+      <a class="quiz-card" href="${link}" ${external ? 'target="_blank" rel="noopener"' : ''}>
+        <span class="kelas-chip">${item.kelas}</span>
+        <div class="qn">${item.judul}</div>
+        <p>${item.desc}</p>
+        <div class="meta"><span>${item.jumlah}</span><span>${item.waktu}</span></div>
+      </a>
+    `;
+    }).join('');
+  }
+  renderLatihan();
+
+  // ======================================================
   // DAFTAR MATERI
   // Tambah/ubah materi per kelas cukup edit array MATERI ini.
   // ======================================================
@@ -532,13 +577,13 @@
       kelas: 'KELAS XI',
       title: 'Energi & getaran',
       topics: ['Usaha, energi, dan daya', 'Momentum & tumbukan', 'Getaran & gelombang', 'Fluida statis & dinamis'],
-      href: 'materi-kelas-xi.html'
+      href: 'https://drive.google.com/file/d/1g49AuJ8hS9XnJtTwQQGhp1K4k1BNuWq3/view?usp=drive_link'
     },
     {
       kelas: 'KELAS XII',
       title: 'Listrik & fisika modern',
       topics: ['Listrik statis & dinamis', 'Medan & induksi magnet', 'Fisika inti & radioaktivitas', 'Pengantar fisika modern'],
-      href: 'materi-kelas-xii.html'
+      href: 'https://drive.google.com/file/d/16P8zL_oQtYjLmr4vpfb8nDEHkt2g6YpC/view?usp=sharing'
     }
     // Contoh menambah kelas/bab baru:
     // {
@@ -558,7 +603,7 @@
         <ul class="traj-list">
           ${item.topics.map(t => `<li>${t}</li>`).join('')}
         </ul>
-        <a class="more" href="${item.href}">Lihat semua materi →</a>
+        <a class="more" href="${item.href}">Lihat semua materi pada buku>>> →</a>
       </div>
     `).join('');
   }

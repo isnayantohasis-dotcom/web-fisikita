@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bank Soal Persiapan UTBK — Fisikita</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --board:#1F3B2E; --board-dark:#152A20; --chalk:#F3EFE3; --chalk-dim:#B9C4B7;
+    --paper:#F1EEDF; --paper-card:#FFFFFF; --ink:#26301F; --ink-soft:#5B6350;
+    --amber:#E8A33D; --amber-dark:#8A5A16; --blue:#6E9FB0; --blue-soft:#93C9DE;
+    --blue-dark:#325366; --line:#E4E0D0;
+    --green-ok:#2F8F5B; --green-ok-tint:#E7F5EC; --red-no:#C1483F; --red-no-tint:#FBEAE8;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:'Plus Jakarta Sans', sans-serif; background:var(--paper); color:var(--ink); line-height:1.6;}
+  .mono{font-family:'JetBrains Mono', monospace;}
+
+  header.nav{position:fixed; top:0; left:0; right:0; z-index:50; background:var(--board); border-bottom:3px solid var(--board-dark);}
+  .nav-inner{max-width:1100px; margin:0 auto; padding:16px 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;}
+  .brand{color:var(--chalk); font-weight:700; font-size:1.15rem; display:flex; align-items:center; gap:10px; text-decoration:none;}
+  nav.links a{color:var(--chalk-dim); text-decoration:none; font-size:.92rem; font-weight:500;}
+  nav.links a:hover{color:var(--amber);}
+
+  .page-head-wrap{padding:36px 24px 0;}
+  .page-head{
+    max-width:900px; margin:0 auto; border-radius:26px; overflow:hidden; position:relative;
+    background:linear-gradient(120deg, var(--board) 0%, var(--blue-dark) 100%);
+    color:var(--chalk); padding:36px; box-shadow:0 20px 40px rgba(31,59,46,0.16);
+  }
+  .page-head::after{content:""; position:absolute; right:-50px; top:-50px; width:180px; height:180px; border-radius:50%; background:rgba(255,255,255,0.07);}
+  .page-head .tag{
+    font-family:'JetBrains Mono', monospace; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase;
+    background:rgba(255,255,255,0.14); color:var(--chalk); display:inline-block; padding:5px 13px;
+    border-radius:20px; margin-bottom:12px; position:relative;
+  }
+  .page-head h1{font-size:1.8rem; font-weight:800; margin-bottom:8px; position:relative;}
+  .page-head p{color:rgba(243,239,227,0.85); font-size:.92rem; position:relative;}
+  .page-head .meta-row{display:flex; gap:14px; flex-wrap:wrap; margin-top:14px; position:relative; font-size:.8rem; color:var(--chalk-dim);}
+
+  /* TIMER */
+  .timer-bar{
+    position:sticky; top:0; z-index:40; background:var(--paper-card); border-bottom:1px solid var(--line);
+    padding:12px 24px; display:flex; justify-content:center; align-items:center; gap:12px;
+    box-shadow:0 2px 8px rgba(31,59,46,0.05);
+  }
+  .timer-bar .label{font-size:.82rem; color:var(--ink-soft);}
+  .timer-num{
+    font-family:'JetBrains Mono', monospace; font-size:1.15rem; font-weight:700; color:var(--board);
+    background:var(--accent-tint,#E3EDF0); padding:4px 14px; border-radius:8px;
+  }
+  .timer-num.warn{color:#9B4239; background:var(--red-no-tint); animation:pulseWarn 1.2s infinite;}
+  @keyframes pulseWarn{0%,100%{opacity:1;}50%{opacity:.55;}}
+
+  section{padding:24px 24px 80px;}
+  .quiz-inner{max-width:900px; margin:0 auto;}
+
+  .score-panel{
+    display:none; background:var(--paper-card); border:1px solid var(--line); border-radius:18px;
+    padding:26px 28px; margin-bottom:26px; box-shadow:0 6px 18px rgba(31,59,46,0.08); text-align:center;
+  }
+  .score-panel.show{display:block;}
+  .score-num{font-size:2.6rem; font-weight:800; color:var(--board);}
+  .score-num span{font-size:1.2rem; color:var(--ink-soft); font-weight:600;}
+  .score-detail{font-family:'JetBrains Mono', monospace; font-size:.82rem; color:var(--ink-soft); margin-top:6px;}
+  .score-msg{font-family:'Kalam', cursive; font-size:1.15rem; color:var(--blue-dark); margin-top:10px; max-width:56ch; margin-left:auto; margin-right:auto;}
+  .score-sub{font-size:.88rem; color:var(--ink-soft); margin-top:8px;}
+
+  .topic-jump{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px;}
+  .topic-jump a{
+    font-family:'JetBrains Mono', monospace; font-size:.72rem; text-decoration:none; color:var(--blue-dark);
+    background:#E3EDF0; padding:5px 11px; border-radius:20px;
+  }
+
+  .section-divider{
+    font-family:'Kalam', cursive; color:var(--amber-dark); font-size:1.15rem; margin:30px 0 14px; padding-top:4px;
+  }
+  .section-divider:first-child{margin-top:0;}
+
+  .q-card{
+    background:var(--paper-card); border:1px solid var(--line); border-radius:16px;
+    padding:20px 22px; margin-bottom:16px; box-shadow:0 3px 10px rgba(31,59,46,0.05);
+    transition:border-color .2s, background .2s;
+  }
+  .q-card.correct{border-color:var(--green-ok); background:var(--green-ok-tint);}
+  .q-card.incorrect{border-color:var(--red-no); background:var(--red-no-tint);}
+  .q-top{display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap;}
+  .q-num{
+    width:26px; height:26px; border-radius:50%; background:var(--board); color:var(--chalk);
+    display:flex; align-items:center; justify-content:center; font-size:.76rem; font-weight:700; flex-shrink:0;
+  }
+  .topic-chip{
+    font-family:'JetBrains Mono', monospace; font-size:.66rem; letter-spacing:.02em;
+    padding:3px 9px; border-radius:20px; font-weight:600; background:#E9E4D4; color:var(--ink-soft);
+  }
+  .q-text{font-size:.95rem; font-weight:600; margin-bottom:12px; line-height:1.5;}
+
+  .opt-list{display:flex; flex-direction:column; gap:7px;}
+  .opt-item{
+    display:flex; align-items:center; gap:10px; padding:9px 13px; border:1px solid var(--line);
+    border-radius:9px; cursor:pointer; font-size:.87rem; transition:background .15s, border-color .15s;
+  }
+  .opt-item:hover{background:#F6F4EA;}
+  .opt-item input{accent-color:var(--board); width:15px; height:15px; flex-shrink:0;}
+  .opt-item.opt-correct{border-color:var(--green-ok); background:var(--green-ok-tint); font-weight:600;}
+  .opt-item.opt-wrong-pick{border-color:var(--red-no); background:var(--red-no-tint);}
+
+  .explain{
+    margin-top:12px; padding:11px 13px; border-radius:10px; background:#F6F4EA;
+    font-size:.82rem; color:var(--ink-soft); display:none;
+  }
+  .explain.show{display:block;}
+  .explain strong{color:var(--ink);}
+
+  .submit-row{display:flex; justify-content:center; gap:12px; margin-top:16px; flex-wrap:wrap;}
+  .btn{display:inline-block; padding:13px 28px; border-radius:8px; font-weight:700; font-size:.92rem; cursor:pointer; border:none; font-family:inherit;}
+  .btn-primary{background:var(--amber); color:var(--board-dark);}
+  .btn-primary:hover{background:#D9922E;}
+  .btn-ghost{background:transparent; border:1.5px solid var(--line); color:var(--ink);}
+  .btn-ghost:hover{border-color:var(--board);}
+
+  footer{background:var(--board-dark); color:var(--chalk-dim); padding:30px 24px; text-align:center; font-size:.85rem;}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <svg width="30" height="30" viewBox="0 0 130 130" style="flex-shrink:0;">
+        <circle cx="65" cy="30" r="3.2" fill="#F3EFE3"/><circle cx="41" cy="83" r="3.5" fill="#F3EFE3" opacity="0.2"/>
+        <circle cx="53" cy="87" r="4" fill="#F3EFE3" opacity="0.35"/><circle cx="65" cy="88.5" r="4.5" fill="#F3EFE3" opacity="0.55"/>
+        <circle cx="75" cy="87.7" r="5" fill="#F3EFE3" opacity="0.78"/>
+        <line x1="65" y1="30" x2="84" y2="86" stroke="#F3EFE3" stroke-width="2.4" stroke-linecap="round"/>
+        <circle cx="84" cy="86" r="9" fill="#E8A33D"/>
+      </svg>
+      Fisikita <span class="mono" style="font-size:.75rem;color:var(--chalk-dim);font-weight:400;">· SMAN 10 Bulukumba</span>
+    </a>
+    <nav class="links"><a href="index.html#latihan">← Kembali ke Latihan</a></nav>
+  </div>
+</header>
+<script>
+  (function(){
+    function adjustHeaderSpacing(){
+      var header = document.querySelector('header.nav');
+      if(header){ document.body.style.paddingTop = header.offsetHeight + 'px'; }
+    }
+    adjustHeaderSpacing();
+    window.addEventListener('resize', adjustHeaderSpacing);
+  })();
+</script>
+
+<div class="page-head-wrap">
+  <div class="page-head">
+    <span class="tag">Kelas X – XII · Persiapan UTBK</span>
+    <h1>Bank Soal Persiapan UTBK Fisika</h1>
+    <p>40 soal pilihan ganda lintas topik — dari mekanika dasar sampai fisika modern, tingkat kesulitan bertahap. Cocok buat latihan simulasi ujian, dilengkapi timer 40 menit.</p>
+    <div class="meta-row"><span>📝 40 soal</span><span>⏱️ 40 menit</span><span>🎯 Kelas X, XI, XII</span></div>
+  </div>
+</div>
+
+<div class="timer-bar">
+  <span class="label">Sisa waktu:</span>
+  <span class="timer-num" id="timerNum">40:00</span>
+  <button class="btn btn-ghost" id="startBtn" style="padding:8px 16px; font-size:.8rem;">Mulai Timer</button>
+</div>
+
+<section>
+  <div class="quiz-inner">
+
+    <div class="score-panel" id="scorePanel">
+      <div class="score-num" id="scoreNum">0<span>/100</span></div>
+      <div class="score-detail" id="scoreDetail"></div>
+      <div class="score-msg" id="scoreMsg"></div>
+      <div class="score-sub" id="scoreSub"></div>
+    </div>
+
+    <div class="topic-jump">
+      <a href="#topikX">Kelas X (1–10)</a>
+      <a href="#topikXI">Kelas XI (11–20)</a>
+      <a href="#topikXII">Kelas XII (21–35)</a>
+      <a href="#topikCampuran">Campuran (36–40)</a>
+    </div>
+
+    <div id="questionList"></div>
+
+    <div class="submit-row">
+      <button class="btn btn-primary" id="submitBtn">Selesai & Cek Jawaban</button>
+      <button class="btn btn-ghost" id="retryBtn" style="display:none;">Coba Lagi</button>
+    </div>
+
+  </div>
+</section>
+
+<footer>© 2026 Fisikita — SMAN 10 Bulukumba</footer>
+
+<script>
+  // ======================================================
+  // BANK SOAL — PERSIAPAN UTBK FISIKA (40 SOAL)
+  // Semua bertipe pilihan ganda 5 opsi, meniru format UTBK asli.
+  // "section" dipakai untuk membuat pembatas/label bab di tampilan.
+  // ======================================================
+  const QUESTIONS = [
+    { section: 'Kelas X — Mekanika Dasar', anchor: 'topikX', topic: 'Angka Penting',
+      text: '1. Bilangan 0,00205 memiliki jumlah angka penting sebanyak...',
+      options: ['2', '3', '4', '5', '6'], correct: 1,
+      explain: 'Angka nol di depan (sebelum angka bukan nol pertama) tidak dihitung sebagai angka penting, sedangkan angka nol di antara angka bukan nol tetap dihitung. Jadi 0,00205 memiliki 3 angka penting: 2, 0, dan 5.' },
+
+    { section: null, anchor: null, topic: 'Kinematika GLB',
+      text: '2. Sebuah mobil bergerak dengan kecepatan tetap 72 km/jam. Jarak yang ditempuh mobil tersebut dalam waktu 5 menit adalah...',
+      options: ['3 km', '4 km', '5 km', '6 km', '7 km'], correct: 3,
+      explain: '72 km/jam = 20 m/s. Waktu 5 menit = 300 sekon. Jarak = v×t = 20×300 = 6000 m = 6 km.' },
+
+    { section: null, anchor: null, topic: 'Kinematika GLBB',
+      text: '3. Sebuah motor bergerak dari keadaan diam dengan percepatan tetap 2 m/s². Kecepatan motor setelah menempuh waktu 5 sekon adalah...',
+      options: ['2 m/s', '4 m/s', '6 m/s', '8 m/s', '10 m/s'], correct: 4,
+      explain: 'v = v₀ + at = 0 + (2×5) = 10 m/s.' },
+
+    { section: null, anchor: null, topic: 'Gerak Jatuh Bebas',
+      text: '4. Sebuah benda dijatuhkan bebas dari ketinggian 45 m (g = 10 m/s²). Waktu yang dibutuhkan benda untuk sampai ke tanah adalah...',
+      options: ['2 s', '3 s', '4 s', '5 s', '6 s'], correct: 1,
+      explain: 'h = ½gt² → 45 = ½×10×t² → t² = 9 → t = 3 s.' },
+
+    { section: null, anchor: null, topic: 'Gerak Parabola',
+      text: '5. Sebuah peluru ditembakkan dengan kecepatan awal 40 m/s dan sudut elevasi 30° (sin 30° = 0,5; g = 10 m/s²). Waktu yang dibutuhkan peluru untuk mencapai titik tertinggi adalah...',
+      options: ['1 s', '2 s', '3 s', '4 s', '5 s'], correct: 1,
+      explain: 'v₀y = v₀ sin30° = 40×0,5 = 20 m/s. Waktu naik = v₀y/g = 20/10 = 2 s.' },
+
+    { section: null, anchor: null, topic: 'Gerak Melingkar',
+      text: '6. Sebuah roda berputar dengan kecepatan sudut 4 rad/s dan berjari-jari 0,5 m. Kecepatan linear di tepi roda tersebut adalah...',
+      options: ['0,5 m/s', '1 m/s', '2 m/s', '4 m/s', '8 m/s'], correct: 2,
+      explain: 'v = ω×r = 4×0,5 = 2 m/s.' },
+
+    { section: null, anchor: null, topic: 'Hukum I Newton',
+      text: '7. Sebuah benda dikatakan dalam keadaan setimbang (resultan gaya = 0) apabila benda tersebut...',
+      options: ['Selalu diam', 'Bergerak lurus beraturan atau diam', 'Selalu bergerak dipercepat', 'Berputar dengan kecepatan berubah', 'Mengalami percepatan tetap'], correct: 1,
+      explain: 'Hukum I Newton (hukum kelembaman): jika resultan gaya = 0, benda yang diam akan tetap diam, dan benda yang bergerak akan tetap bergerak lurus beraturan.' },
+
+    { section: null, anchor: null, topic: 'Hukum II Newton',
+      text: '8. Sebuah benda bermassa 2 kg dikenai gaya sebesar 10 N. Percepatan yang dialami benda tersebut adalah...',
+      options: ['2 m/s²', '4 m/s²', '5 m/s²', '8 m/s²', '10 m/s²'], correct: 2,
+      explain: 'a = F/m = 10/2 = 5 m/s².' },
+
+    { section: null, anchor: null, topic: 'Hukum III Newton',
+      text: '9. Ketika seseorang mendayung perahu, air didorong ke belakang oleh dayung. Sesuai Hukum III Newton, perahu akan bergerak...',
+      options: ['Ke belakang, karena gaya aksi-reaksi searah', 'Ke depan, karena air memberi gaya reaksi ke dayung', 'Diam saja karena gaya saling meniadakan', 'Ke samping', 'Berputar'], correct: 1,
+      explain: 'Gaya aksi (dayung mendorong air ke belakang) selalu diikuti gaya reaksi yang besarnya sama tapi arahnya berlawanan (air mendorong dayung ke depan) — inilah yang membuat perahu bergerak maju.' },
+
+    { section: null, anchor: null, topic: 'Gaya Gesek',
+      text: '10. Sebuah balok bermassa 4 kg berada di atas lantai kasar dengan koefisien gesek kinetis 0,25 (g = 10 m/s²). Besar gaya gesek kinetis yang bekerja pada balok saat bergerak adalah...',
+      options: ['4 N', '6 N', '8 N', '10 N', '12 N'], correct: 3,
+      explain: 'f = μ×N = μ×m×g = 0,25×4×10 = 10 N.' },
+
+    { section: 'Kelas XI — Energi, Momentum, Gelombang & Fluida', anchor: 'topikXI', topic: 'Usaha',
+      text: '11. Sebuah gaya 20 N bekerja pada benda dan menyebabkan benda berpindah sejauh 5 m searah gaya. Usaha yang dilakukan gaya tersebut adalah...',
+      options: ['25 J', '50 J', '100 J', '150 J', '200 J'], correct: 2,
+      explain: 'W = F×s = 20×5 = 100 J.' },
+
+    { section: null, anchor: null, topic: 'Energi Kinetik',
+      text: '12. Sebuah benda bermassa 2 kg bergerak dengan kecepatan 10 m/s. Energi kinetik benda tersebut adalah...',
+      options: ['50 J', '100 J', '150 J', '200 J', '250 J'], correct: 1,
+      explain: 'Ek = ½mv² = ½×2×10² = 100 J.' },
+
+    { section: null, anchor: null, topic: 'Kekekalan Energi Mekanik',
+      text: '13. Sebuah benda dijatuhkan dari ketinggian 20 m (g = 10 m/s², tanpa gesekan udara). Kecepatan benda saat tepat menyentuh tanah adalah...',
+      options: ['10 m/s', '15 m/s', '20 m/s', '25 m/s', '30 m/s'], correct: 2,
+      explain: 'Dari kekekalan energi mekanik: v = √(2gh) = √(2×10×20) = √400 = 20 m/s.' },
+
+    { section: null, anchor: null, topic: 'Momentum',
+      text: '14. Sebuah bola bermassa 0,5 kg bergerak dengan kecepatan 10 m/s. Besar momentum bola tersebut adalah...',
+      options: ['2 kg·m/s', '5 kg·m/s', '7,5 kg·m/s', '10 kg·m/s', '15 kg·m/s'], correct: 1,
+      explain: 'p = m×v = 0,5×10 = 5 kg·m/s.' },
+
+    { section: null, anchor: null, topic: 'Tumbukan',
+      text: '15. Dua benda A (massa 2 kg, kecepatan 4 m/s) dan B (massa 2 kg, diam) bertumbukan lenting sempurna segaris. Jika setelah tumbukan benda A diam, kecepatan benda B setelah tumbukan adalah...',
+      options: ['0 m/s', '2 m/s', '4 m/s', '6 m/s', '8 m/s'], correct: 2,
+      explain: 'Kekekalan momentum: m×4 + 0 = m×0 + m×vB\' → vB\' = 4 m/s. Ini sesuai sifat tumbukan lenting sempurna antara dua benda bermassa sama — kecepatannya saling "bertukar".' },
+
+    { section: null, anchor: null, topic: 'Getaran',
+      text: '16. Sebuah bandul sederhana memiliki panjang tali 0,25 m (g = 10 m/s², π² ≈ 10). Periode getaran bandul tersebut adalah...',
+      options: ['0,5 s', '1 s', '1,5 s', '2 s', '2,5 s'], correct: 1,
+      explain: 'T = 2π√(L/g) → T² = 4π²(L/g) = 4×10×(0,25/10) = 1, sehingga T = 1 s.' },
+
+    { section: null, anchor: null, topic: 'Gelombang',
+      text: '17. Sebuah gelombang merambat dengan frekuensi 50 Hz dan panjang gelombang 4 m. Cepat rambat gelombang tersebut adalah...',
+      options: ['100 m/s', '150 m/s', '200 m/s', '250 m/s', '300 m/s'], correct: 2,
+      explain: 'v = f×λ = 50×4 = 200 m/s.' },
+
+    { section: null, anchor: null, topic: 'Bunyi',
+      text: '18. Taraf intensitas bunyi sebuah mesin adalah 60 dB pada jarak tertentu. Jika terdapat 10 mesin identik menyala bersamaan pada jarak yang sama, taraf intensitas totalnya adalah...',
+      options: ['60 dB', '65 dB', '70 dB', '75 dB', '80 dB'], correct: 2,
+      explain: 'TIₙ = TI₁ + 10 log n = 60 + 10 log 10 = 60 + 10 = 70 dB.' },
+
+    { section: null, anchor: null, topic: 'Fluida Statis',
+      text: '19. Sebuah titik berada 2 m di bawah permukaan air (ρ air = 1000 kg/m³, g = 10 m/s²). Tekanan hidrostatis pada titik tersebut adalah...',
+      options: ['2×10³ Pa', '2×10⁴ Pa', '2×10⁵ Pa', '2×10⁶ Pa', '2×10⁷ Pa'], correct: 1,
+      explain: 'P = ρ×g×h = 1000×10×2 = 20.000 Pa = 2×10⁴ Pa.' },
+
+    { section: null, anchor: null, topic: 'Fluida Dinamis',
+      text: '20. Air mengalir melalui pipa dengan luas penampang 4 cm² berkecepatan 6 m/s. Jika luas penampang pipa mengecil menjadi 2 cm², kecepatan air di bagian yang mengecil tersebut adalah...',
+      options: ['3 m/s', '6 m/s', '9 m/s', '12 m/s', '24 m/s'], correct: 3,
+      explain: 'Persamaan kontinuitas: A₁v₁ = A₂v₂ → 4×6 = 2×v₂ → v₂ = 12 m/s.' },
+
+    { section: 'Kelas XII — Listrik, Magnet & Fisika Modern', anchor: 'topikXII', topic: 'Listrik Statis',
+      text: '21. Dua muatan +3 μC dan +6 μC terpisah sejauh 3 cm (k = 9×10⁹). Besar gaya Coulomb antara keduanya adalah...',
+      options: ['90 N', '120 N', '150 N', '180 N', '210 N'], correct: 3,
+      explain: 'F = k·q₁·q₂/r² = (9×10⁹×3×10⁻⁶×6×10⁻⁶)/(0,03)² = 180 N.' },
+
+    { section: null, anchor: null, topic: 'Medan Listrik',
+      text: '22. Kuat medan listrik pada jarak 10 cm dari muatan titik +5 μC adalah... (k = 9×10⁹)',
+      options: ['4,5×10⁵ N/C', '9×10⁵ N/C', '4,5×10⁶ N/C', '9×10⁶ N/C', '4,5×10⁷ N/C'], correct: 2,
+      explain: 'E = k·q/r² = (9×10⁹×5×10⁻⁶)/(0,1)² = 4,5×10⁶ N/C.' },
+
+    { section: null, anchor: null, topic: 'Hukum Ohm',
+      text: '23. Sebuah resistor 15 Ω dialiri arus 2 A. Tegangan pada ujung-ujung resistor tersebut adalah...',
+      options: ['10 V', '15 V', '20 V', '30 V', '45 V'], correct: 3,
+      explain: 'V = I×R = 2×15 = 30 V.' },
+
+    { section: null, anchor: null, topic: 'Rangkaian Paralel',
+      text: '24. Tiga resistor masing-masing 4 Ω dipasang paralel. Hambatan pengganti rangkaian tersebut adalah...',
+      options: ['1,33 Ω', '2 Ω', '4 Ω', '8 Ω', '12 Ω'], correct: 0,
+      explain: '1/Rp = 1/4+1/4+1/4 = 3/4, sehingga Rp = 4/3 ≈ 1,33 Ω. Ingat, hambatan pengganti paralel selalu lebih kecil dari resistor terkecil dalam rangkaian.' },
+
+    { section: null, anchor: null, topic: 'Energi Listrik',
+      text: '25. Sebuah alat listrik berdaya 100 W digunakan selama 10 jam. Energi listrik yang digunakan alat tersebut adalah...',
+      options: ['0,1 kWh', '0,5 kWh', '1 kWh', '2 kWh', '10 kWh'], correct: 2,
+      explain: 'W = P×t = 100 W × 10 jam = 1000 Wh = 1 kWh.' },
+
+    { section: null, anchor: null, topic: 'Gaya Lorentz',
+      text: '26. Kawat sepanjang 1 m dialiri arus 5 A berada tegak lurus dalam medan magnet 0,4 T. Besar gaya Lorentz yang dialami kawat tersebut adalah...',
+      options: ['0,5 N', '1 N', '2 N', '4 N', '8 N'], correct: 2,
+      explain: 'F = B×I×L = 0,4×5×1 = 2 N.' },
+
+    { section: null, anchor: null, topic: 'GGL Induksi',
+      text: '27. Kumparan dengan 50 lilitan mengalami perubahan fluks sebesar 0,04 Wb dalam waktu 0,2 sekon. GGL induksi rata-rata yang dihasilkan kumparan tersebut adalah...',
+      options: ['2 V', '5 V', '10 V', '20 V', '50 V'], correct: 2,
+      explain: 'ε = N×(ΔΦ/Δt) = 50×(0,04/0,2) = 10 V.' },
+
+    { section: null, anchor: null, topic: 'Fisika Inti',
+      text: '28. Suatu unsur radioaktif memiliki waktu paruh 4 hari. Jika massa awal unsur tersebut 80 gram, massa unsur yang tersisa setelah 12 hari adalah...',
+      options: ['5 gram', '10 gram', '20 gram', '40 gram', '60 gram'], correct: 1,
+      explain: 'Jumlah waktu paruh yang terlewati: n = t/T = 12/4 = 3. Massa sisa = 80×(½)³ = 80/8 = 10 gram.' },
+
+    { section: null, anchor: null, topic: 'Fisika Inti',
+      text: '29. Konsep "defek massa" pada reaksi inti menjelaskan bahwa massa inti atom selalu lebih ... daripada jumlah massa partikel-partikel pembentuknya (proton dan neutron).',
+      options: ['Besar', 'Kecil', 'Sama', 'Tidak dapat dibandingkan', 'Dua kali lipat'], correct: 1,
+      explain: 'Massa inti selalu sedikit lebih kecil dibanding jumlah massa proton dan neutron pembentuknya. Selisih massa ini (defek massa) berubah menjadi energi ikat inti sesuai persamaan E=mc².' },
+
+    { section: null, anchor: null, topic: 'Fisika Modern',
+      text: '30. Menurut teori efek fotolistrik Einstein, elektron akan terlepas dari permukaan logam apabila foton cahaya yang datang memiliki...',
+      options: ['Intensitas yang cukup besar, berapa pun frekuensinya', 'Frekuensi yang lebih besar dari frekuensi ambang logam tersebut', 'Panjang gelombang yang sangat panjang', 'Energi yang lebih kecil dari fungsi kerja logam', 'Kecepatan cahaya yang lebih besar'], correct: 1,
+      explain: 'Efek fotolistrik terjadi kalau frekuensi foton yang datang melebihi frekuensi ambang (frekuensi minimum) logam tersebut — bukan soal seberapa terang cahayanya (intensitas), tapi soal energi tiap fotonnya.' },
+
+    { section: null, anchor: null, topic: 'Transformator',
+      text: '31. Sebuah transformator step-down memiliki 1000 lilitan primer dan 100 lilitan sekunder. Jika tegangan primer 220 V, tegangan sekundernya adalah...',
+      options: ['2,2 V', '11 V', '22 V', '44 V', '110 V'], correct: 2,
+      explain: 'Vs = Vp×(Ns/Np) = 220×(100/1000) = 22 V.' },
+
+    { section: null, anchor: null, topic: 'Kapasitor',
+      text: '32. Dua kapasitor masing-masing 3 μF dan 5 μF disusun paralel. Kapasitas pengganti rangkaian tersebut adalah...',
+      options: ['2 μF', '3 μF', '5 μF', '8 μF', '15 μF'], correct: 3,
+      explain: 'Untuk kapasitor paralel, kapasitas penggantinya tinggal dijumlahkan langsung: Cp = C₁+C₂ = 3+5 = 8 μF.' },
+
+    { section: null, anchor: null, topic: 'Hukum Kirchhoff',
+      text: '33. Pada suatu titik cabang, arus yang masuk adalah 10 A dan 4 A, sedangkan salah satu arus yang keluar adalah 6 A. Besar arus keluar yang lain adalah...',
+      options: ['4 A', '6 A', '8 A', '10 A', '14 A'], correct: 2,
+      explain: 'Total arus masuk = 10+4 = 14 A. Karena arus masuk = arus keluar, maka arus keluar yang lain = 14−6 = 8 A.' },
+
+    { section: null, anchor: null, topic: 'Energi Potensial Listrik',
+      text: '34. Dua muatan +2 μC dan +4 μC terpisah sejauh 2 cm (k = 9×10⁹). Energi potensial listrik sistem dua muatan tersebut adalah...',
+      options: ['1,8 J', '3,6 J', '7,2 J', '14,4 J', '36 J'], correct: 1,
+      explain: 'Ep = k·q₁·q₂/r = (9×10⁹×2×10⁻⁶×4×10⁻⁶)/0,02 = 3,6 J.' },
+
+    { section: null, anchor: null, topic: 'Gaya Antar Kawat',
+      text: '35. Dua kawat sejajar berjarak 2 cm dialiri arus masing-masing 3 A dan 4 A searah (μ₀ = 4π×10⁻⁷). Gaya per satuan panjang antara kedua kawat tersebut adalah...',
+      options: ['1,2×10⁻⁵ N/m', '1,2×10⁻⁴ N/m', '1,2×10⁻³ N/m', '1,2×10⁻² N/m', '1,2×10⁻¹ N/m'], correct: 1,
+      explain: 'F/L = μ₀·I₁·I₂/(2πa) = (4π×10⁻⁷×3×4)/(2π×0,02) = 1,2×10⁻⁴ N/m.' },
+
+    { section: 'Campuran & Aplikasi Sehari-hari', anchor: 'topikCampuran', topic: 'Radioaktivitas',
+      text: '36. Sinar radioaktif yang paling besar daya tembusnya tetapi paling kecil daya ionisasinya adalah...',
+      options: ['Sinar alfa', 'Sinar beta', 'Sinar gamma', 'Sinar X', 'Sinar ultraviolet'], correct: 2,
+      explain: 'Sinar gamma memiliki daya tembus paling besar (bisa menembus lempeng logam tebal) karena tidak bermuatan dan berenergi sangat tinggi, tetapi justru karena itu daya ionisasinya paling kecil dibanding alfa dan beta.' },
+
+    { section: null, anchor: null, topic: 'Relativitas',
+      text: '37. Menurut teori relativitas khusus Einstein, ketika sebuah benda bergerak mendekati kecepatan cahaya, massa benda tersebut (menurut pengamat diam) akan...',
+      options: ['Tetap', 'Semakin kecil', 'Semakin besar', 'Menjadi nol', 'Tidak terdefinisi'], correct: 2,
+      explain: 'Menurut teori relativitas khusus, massa relativistik benda akan semakin besar seiring kecepatannya mendekati kecepatan cahaya (m = m₀/√(1−v²/c²)).' },
+
+    { section: null, anchor: null, topic: 'Rangkaian Campuran',
+      text: '38. Sebuah resistor 4 Ω disusun seri dengan gabungan dua resistor 6 Ω yang dipasang paralel. Hambatan total rangkaian tersebut adalah...',
+      options: ['5 Ω', '6 Ω', '7 Ω', '8 Ω', '10 Ω'], correct: 2,
+      explain: 'Dua resistor 6 Ω paralel: Rp = (6×6)/(6+6) = 3 Ω. Karena disusun seri dengan resistor 4 Ω: Rtotal = 4+3 = 7 Ω.' },
+
+    { section: null, anchor: null, topic: 'Aplikasi Sehari-hari',
+      text: '39. Fungsi utama sekring (fuse) pada instalasi listrik rumah adalah...',
+      options: ['Menambah tegangan listrik', 'Memutus arus secara otomatis saat terjadi arus berlebih, mencegah korsleting/kebakaran', 'Menyimpan energi listrik', 'Mengubah arus AC menjadi DC', 'Menaikkan daya listrik'], correct: 1,
+      explain: 'Sekring dirancang untuk putus (terbakar) saat arus yang melewatinya melebihi batas aman, sehingga mencegah kerusakan alat atau bahaya kebakaran akibat korsleting.' },
+
+    { section: null, anchor: null, topic: 'Gelombang Elektromagnetik',
+      text: '40. Berikut ini yang BUKAN merupakan penerapan gelombang elektromagnetik dalam kehidupan sehari-hari adalah...',
+      options: ['Sinar-X untuk rontgen', 'Gelombang mikro untuk microwave', 'Inframerah untuk remote control', 'Gelombang bunyi untuk USG', 'Gelombang radio untuk siaran'], correct: 3,
+      explain: 'Gelombang bunyi yang digunakan pada USG adalah gelombang MEKANIK (butuh medium untuk merambat), bukan gelombang elektromagnetik — meski sering dikira sama karena sama-sama "gelombang".' }
+  ];
+
+  function renderQuestions(){
+    const list = document.getElementById('questionList');
+    let html = '';
+    QUESTIONS.forEach((q, i) => {
+      if(q.section){
+        html += `<h3 class="section-divider" id="${q.anchor}">${q.section}</h3>`;
+      }
+      html += `
+        <div class="q-card" id="qcard${i}">
+          <div class="q-top">
+            <span class="q-num">${i+1}</span>
+            <span class="topic-chip">${q.topic}</span>
+          </div>
+          <div class="q-text">${q.text.replace(/^\d+\.\s/, '')}</div>
+          <div class="opt-list" id="q${i}">
+            ${q.options.map((opt, oi) => `
+              <label class="opt-item" data-oi="${oi}">
+                <input type="radio" name="q${i}" value="${oi}">
+                <span>${opt}</span>
+              </label>
+            `).join('')}
+          </div>
+          <div class="explain" id="explain${i}"><strong>Pembahasan:</strong> ${q.explain}</div>
+        </div>
+      `;
+    });
+    list.innerHTML = html;
+  }
+  renderQuestions();
+
+  function checkAnswers(){
+    let benar = 0;
+    QUESTIONS.forEach((q, i) => {
+      const card = document.getElementById('qcard' + i);
+      const checked = document.querySelector(`input[name="q${i}"]:checked`);
+      const userIdx = checked ? parseInt(checked.value) : -1;
+      const isCorrect = userIdx === q.correct;
+      document.querySelectorAll(`#q${i} .opt-item`).forEach(el => {
+        const oi = parseInt(el.dataset.oi);
+        el.querySelector('input').disabled = true;
+        if(oi === q.correct) el.classList.add('opt-correct');
+        if(oi === userIdx && userIdx !== q.correct) el.classList.add('opt-wrong-pick');
+      });
+      card.classList.add(isCorrect ? 'correct' : 'incorrect');
+      document.getElementById('explain' + i).classList.add('show');
+      if(isCorrect) benar++;
+    });
+
+    const score = Math.round((benar / QUESTIONS.length) * 100);
+    showScore(score, benar);
+    document.getElementById('submitBtn').style.display = 'none';
+    document.getElementById('retryBtn').style.display = 'inline-block';
+    stopTimer();
+    document.getElementById('scorePanel').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function showScore(score, benar){
+    const panel = document.getElementById('scorePanel');
+    document.getElementById('scoreNum').innerHTML = score + '<span>/100</span>';
+    document.getElementById('scoreDetail').textContent = `Benar ${benar} dari ${QUESTIONS.length} soal`;
+
+    let msg, sub;
+    if(score >= 85){
+      msg = 'Mantap, ini level siap tempur UTBK! 🚀';
+      sub = 'Penguasaan lintas topikmu udah kuat banget. Tetap konsisten latihan soal biar makin terbiasa dengan ritme dan gaya soal ujian sesungguhnya.';
+    } else if(score >= 65){
+      msg = 'Udah on track, tinggal dipoles lagi. 📈';
+      sub = 'Sebagian besar topik sudah kepegang. Coba fokus baca ulang pembahasan soal yang salah, catat topik mana yang paling sering meleset, lalu perdalam di situ.';
+    } else if(score >= 40){
+      msg = 'Lumayan sebagai titik awal, masih ada PR. 📘';
+      sub = 'Wajar kalau soal campuran lintas kelas begini terasa berat di awal. Coba pisahkan latihan per topik dulu (bisa cek menu Latihan lainnya), baru gabung lagi ke simulasi kayak gini.';
+    } else {
+      msg = 'Santai, ini baru pemanasan. Yang penting sudah coba! 💪';
+      sub = 'Soal ini sengaja dibuat menantang karena mencakup materi 3 tahun sekaligus. Jangan patah semangat — baca satu-satu pembahasannya, latihan per topik dulu, baru coba simulasi ini lagi nanti.';
+    }
+    document.getElementById('scoreMsg').textContent = msg;
+    document.getElementById('scoreSub').textContent = sub;
+    panel.classList.add('show');
+  }
+
+  document.getElementById('submitBtn').addEventListener('click', checkAnswers);
+  document.getElementById('retryBtn').addEventListener('click', () => location.reload());
+
+  // ------------------------------------------------------
+  // TIMER 40 MENIT (opsional, siswa boleh pilih mulai atau tidak)
+  // ------------------------------------------------------
+  let timeLeft = 40 * 60;
+  let timerInterval = null;
+  const timerNum = document.getElementById('timerNum');
+  const startBtn = document.getElementById('startBtn');
+
+  function formatTime(s){
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+  }
+  function tickTimer(){
+    timeLeft--;
+    timerNum.textContent = formatTime(Math.max(timeLeft,0));
+    if(timeLeft <= 300) timerNum.classList.add('warn');
+    if(timeLeft <= 0){
+      stopTimer();
+      checkAnswers();
+    }
+  }
+  function stopTimer(){
+    if(timerInterval){ clearInterval(timerInterval); timerInterval = null; }
+  }
+  startBtn.addEventListener('click', () => {
+    if(timerInterval) return;
+    timerInterval = setInterval(tickTimer, 1000);
+    startBtn.textContent = 'Timer Berjalan...';
+    startBtn.disabled = true;
+  });
+</script>
+
+</body>
+</html>

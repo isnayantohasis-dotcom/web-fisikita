@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latihan: Listrik Dinamis — Fisikita</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --board:#1F3B2E; --board-dark:#152A20; --chalk:#F3EFE3; --chalk-dim:#B9C4B7;
+    --paper:#F1EEDF; --paper-card:#FFFFFF; --ink:#26301F; --ink-soft:#5B6350;
+    --amber:#E8A33D; --amber-dark:#8A5A16; --blue:#6E9FB0; --blue-soft:#93C9DE;
+    --blue-dark:#325366; --line:#E4E0D0;
+    --green-ok:#2F8F5B; --green-ok-tint:#E7F5EC; --red-no:#C1483F; --red-no-tint:#FBEAE8;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:'Plus Jakarta Sans', sans-serif; background:var(--paper); color:var(--ink); line-height:1.6;}
+  .mono{font-family:'JetBrains Mono', monospace;}
+
+  header.nav{position:fixed; top:0; left:0; right:0; z-index:50; background:var(--board); border-bottom:3px solid var(--board-dark);}
+  .nav-inner{max-width:1100px; margin:0 auto; padding:16px 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;}
+  .brand{color:var(--chalk); font-weight:700; font-size:1.15rem; display:flex; align-items:center; gap:10px; text-decoration:none;}
+  nav.links a{color:var(--chalk-dim); text-decoration:none; font-size:.92rem; font-weight:500;}
+  nav.links a:hover{color:var(--amber);}
+
+  .page-head-wrap{padding:36px 24px 0;}
+  .page-head{
+    max-width:900px; margin:0 auto; border-radius:26px; overflow:hidden; position:relative;
+    background:linear-gradient(120deg, var(--board) 0%, var(--blue-dark) 100%);
+    color:var(--chalk); padding:36px; box-shadow:0 20px 40px rgba(31,59,46,0.16);
+  }
+  .page-head::after{content:""; position:absolute; right:-50px; top:-50px; width:180px; height:180px; border-radius:50%; background:rgba(255,255,255,0.07);}
+  .page-head .tag{
+    font-family:'JetBrains Mono', monospace; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase;
+    background:rgba(255,255,255,0.14); color:var(--chalk); display:inline-block; padding:5px 13px;
+    border-radius:20px; margin-bottom:12px; position:relative;
+  }
+  .page-head h1{font-size:1.8rem; font-weight:800; margin-bottom:8px; position:relative;}
+  .page-head p{color:rgba(243,239,227,0.85); font-size:.92rem; position:relative;}
+  .page-head .meta-row{display:flex; gap:14px; flex-wrap:wrap; margin-top:14px; position:relative; font-size:.8rem; color:var(--chalk-dim);}
+
+  section{padding:36px 24px 80px;}
+  .quiz-inner{max-width:900px; margin:0 auto;}
+
+  .score-panel{
+    display:none; background:var(--paper-card); border:1px solid var(--line); border-radius:18px;
+    padding:26px 28px; margin-bottom:26px; box-shadow:0 6px 18px rgba(31,59,46,0.08); text-align:center;
+  }
+  .score-panel.show{display:block;}
+  .score-num{font-size:2.6rem; font-weight:800; color:var(--board);}
+  .score-num span{font-size:1.2rem; color:var(--ink-soft); font-weight:600;}
+  .score-msg{font-family:'Kalam', cursive; font-size:1.15rem; color:var(--blue-dark); margin-top:8px; max-width:56ch; margin-left:auto; margin-right:auto;}
+  .score-sub{font-size:.88rem; color:var(--ink-soft); margin-top:8px;}
+
+  .q-card{
+    background:var(--paper-card); border:1px solid var(--line); border-radius:16px;
+    padding:22px 24px; margin-bottom:18px; box-shadow:0 3px 10px rgba(31,59,46,0.05);
+    transition:border-color .2s, background .2s;
+  }
+  .q-card.correct{border-color:var(--green-ok); background:var(--green-ok-tint);}
+  .q-card.incorrect{border-color:var(--red-no); background:var(--red-no-tint);}
+  .q-card.partial{border-color:var(--amber); background:#FDF6E8;}
+  .q-top{display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap;}
+  .q-num{
+    width:28px; height:28px; border-radius:50%; background:var(--board); color:var(--chalk);
+    display:flex; align-items:center; justify-content:center; font-size:.82rem; font-weight:700; flex-shrink:0;
+  }
+  .type-chip{
+    font-family:'JetBrains Mono', monospace; font-size:.66rem; letter-spacing:.03em; text-transform:uppercase;
+    padding:3px 9px; border-radius:20px; font-weight:600; background:#E9E4D4; color:var(--ink-soft);
+  }
+  .level-chip{
+    font-family:'JetBrains Mono', monospace; font-size:.68rem; letter-spacing:.03em; text-transform:uppercase;
+    padding:3px 10px; border-radius:20px; font-weight:600;
+  }
+  .level-mudah{background:#E3EDF0; color:var(--blue-dark);}
+  .level-sedang{background:#FBF0DD; color:var(--amber-dark);}
+  .level-sulit{background:#F7DEDC; color:#9B4239;}
+  .q-text{font-size:.98rem; font-weight:600; margin-bottom:14px; line-height:1.5;}
+  .q-hint{font-size:.78rem; color:var(--ink-soft); margin-bottom:12px; font-style:italic;}
+
+  /* MCQ / TF */
+  .opt-list{display:flex; flex-direction:column; gap:8px;}
+  .opt-item{
+    display:flex; align-items:center; gap:10px; padding:10px 14px; border:1px solid var(--line);
+    border-radius:10px; cursor:pointer; font-size:.9rem; transition:background .15s, border-color .15s;
+  }
+  .opt-item:hover{background:#F6F4EA;}
+  .opt-item input{accent-color:var(--board); width:16px; height:16px; flex-shrink:0;}
+  .opt-item.opt-correct{border-color:var(--green-ok); background:var(--green-ok-tint); font-weight:600;}
+  .opt-item.opt-wrong-pick{border-color:var(--red-no); background:var(--red-no-tint);}
+
+  /* ISIAN */
+  .isian-input{
+    width:100%; max-width:280px; padding:10px 14px; border:1px solid var(--line); border-radius:10px;
+    font-size:.95rem; font-family:'JetBrains Mono', monospace;
+  }
+  .isian-input:disabled{background:#F6F4EA;}
+
+  /* MENJODOHKAN */
+  .match-wrap{display:flex; flex-direction:column; gap:10px;}
+  .match-row{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .match-left{
+    min-width:170px; font-size:.88rem; font-weight:600; background:#F0EDE0; border-radius:8px; padding:9px 12px;
+  }
+  .match-slot{
+    flex:1; min-width:160px; min-height:38px; border:1.5px dashed var(--line); border-radius:8px;
+    padding:8px 12px; font-size:.85rem; color:var(--ink-soft); cursor:pointer; display:flex; align-items:center;
+  }
+  .match-slot.filled{border-style:solid; border-color:var(--blue-dark); background:var(--paper); color:var(--ink); font-weight:600;}
+  .match-slot.slot-correct{border-color:var(--green-ok); background:var(--green-ok-tint); color:var(--ink);}
+  .match-slot.slot-wrong{border-color:var(--red-no); background:var(--red-no-tint); color:var(--ink);}
+  .match-pool{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; padding-top:12px; border-top:1px dashed var(--line);}
+  .pool-chip{
+    background:var(--board); color:var(--chalk); font-size:.82rem; padding:8px 14px; border-radius:20px;
+    cursor:pointer; user-select:none;
+  }
+  .pool-chip:hover{background:var(--blue-dark);}
+  .pool-chip.active-pick{background:var(--amber); color:var(--board-dark); font-weight:700;}
+
+  /* DRAG THE WORD (isi kalimat rumpang) */
+  .sentence-box{
+    font-size:.95rem; line-height:2.1; background:#F6F4EA; border-radius:10px; padding:16px 18px; margin-bottom:14px;
+  }
+  .blank-slot{
+    display:inline-flex; align-items:center; justify-content:center; min-width:90px; padding:2px 10px;
+    border-bottom:2px solid var(--blue-dark); border-radius:4px; font-weight:700; color:var(--blue-dark);
+    cursor:pointer; margin:0 3px;
+  }
+  .blank-slot.empty{color:var(--ink-soft); font-weight:400; border-bottom-style:dashed;}
+  .blank-slot.blank-correct{color:var(--green-ok); border-color:var(--green-ok);}
+  .blank-slot.blank-wrong{color:var(--red-no); border-color:var(--red-no);}
+  .word-bank{display:flex; flex-wrap:wrap; gap:8px;}
+  .word-chip{
+    background:var(--board); color:var(--chalk); font-size:.85rem; padding:8px 16px; border-radius:20px; cursor:pointer;
+  }
+  .word-chip:hover{background:var(--blue-dark);}
+  .word-chip.used{opacity:.3; pointer-events:none;}
+
+  /* DRAG AND DROP KATEGORISASI */
+  .sort-pool{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; padding-bottom:14px; border-bottom:1px dashed var(--line);}
+  .sort-item{
+    background:var(--board); color:var(--chalk); font-size:.83rem; padding:8px 14px; border-radius:10px; cursor:pointer;
+  }
+  .sort-item:hover{background:var(--blue-dark);}
+  .sort-item.active-pick{background:var(--amber); color:var(--board-dark); font-weight:700;}
+  .sort-bins{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .sort-bin{border:1.5px dashed var(--line); border-radius:12px; padding:12px; min-height:90px;}
+  .sort-bin h4{font-size:.82rem; margin-bottom:8px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.03em;}
+  .sort-bin .bin-items{display:flex; flex-wrap:wrap; gap:6px;}
+  .sort-chip{background:var(--paper); border:1px solid var(--line); font-size:.8rem; padding:6px 12px; border-radius:8px; cursor:pointer;}
+  .sort-chip.item-correct{border-color:var(--green-ok); background:var(--green-ok-tint);}
+  .sort-chip.item-wrong{border-color:var(--red-no); background:var(--red-no-tint);}
+
+  .explain{
+    margin-top:14px; padding:12px 14px; border-radius:10px; background:#F6F4EA;
+    font-size:.85rem; color:var(--ink-soft); display:none;
+  }
+  .explain.show{display:block;}
+  .explain strong{color:var(--ink);}
+
+  .submit-row{display:flex; justify-content:center; gap:12px; margin-top:10px; flex-wrap:wrap;}
+  .btn{display:inline-block; padding:13px 28px; border-radius:8px; font-weight:700; font-size:.92rem; cursor:pointer; border:none; font-family:inherit;}
+  .btn-primary{background:var(--amber); color:var(--board-dark);}
+  .btn-primary:hover{background:#D9922E;}
+  .btn-ghost{background:transparent; border:1.5px solid var(--line); color:var(--ink);}
+  .btn-ghost:hover{border-color:var(--board);}
+
+  footer{background:var(--board-dark); color:var(--chalk-dim); padding:30px 24px; text-align:center; font-size:.85rem;}
+
+  @media(max-width:560px){
+    .sort-bins{grid-template-columns:1fr;}
+    .match-row{flex-direction:column; align-items:stretch;}
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <svg width="30" height="30" viewBox="0 0 130 130" style="flex-shrink:0;">
+        <circle cx="65" cy="30" r="3.2" fill="#F3EFE3"/><circle cx="41" cy="83" r="3.5" fill="#F3EFE3" opacity="0.2"/>
+        <circle cx="53" cy="87" r="4" fill="#F3EFE3" opacity="0.35"/><circle cx="65" cy="88.5" r="4.5" fill="#F3EFE3" opacity="0.55"/>
+        <circle cx="75" cy="87.7" r="5" fill="#F3EFE3" opacity="0.78"/>
+        <line x1="65" y1="30" x2="84" y2="86" stroke="#F3EFE3" stroke-width="2.4" stroke-linecap="round"/>
+        <circle cx="84" cy="86" r="9" fill="#E8A33D"/>
+      </svg>
+      Fisikita <span class="mono" style="font-size:.75rem;color:var(--chalk-dim);font-weight:400;">· SMAN 10 Bulukumba</span>
+    </a>
+    <nav class="links"><a href="index.html#latihan">← Kembali ke Latihan</a></nav>
+  </div>
+</header>
+<script>
+  (function(){
+    function adjustHeaderSpacing(){
+      var header = document.querySelector('header.nav');
+      if(header){ document.body.style.paddingTop = header.offsetHeight + 'px'; }
+    }
+    adjustHeaderSpacing();
+    window.addEventListener('resize', adjustHeaderSpacing);
+  })();
+</script>
+
+<div class="page-head-wrap">
+  <div class="page-head">
+    <span class="tag">Kelas XII · Listrik Dinamis</span>
+    <h1>Latihan: Listrik Dinamis</h1>
+    <p>10 soal dengan berbagai bentuk — pilihan ganda, benar-salah, isian, menjodohkan, lengkapi kalimat, sampai kategorisasi. Untuk soal menjodohkan/kategorisasi: klik dulu itemnya, baru klik tempat tujuannya.</p>
+    <div class="meta-row"><span>📝 10 soal</span><span>⏱️ ±25 menit</span><span>🎯 Ohm · Rangkaian · Kirchhoff · Energi Listrik</span></div>
+  </div>
+</div>
+
+<section>
+  <div class="quiz-inner">
+
+    <div class="score-panel" id="scorePanel">
+      <div class="score-num" id="scoreNum">0<span>/100</span></div>
+      <div class="score-msg" id="scoreMsg"></div>
+      <div class="score-sub" id="scoreSub"></div>
+    </div>
+
+    <div id="questionList"></div>
+
+    <div class="submit-row">
+      <button class="btn btn-primary" id="submitBtn">Cek Jawaban</button>
+      <button class="btn btn-ghost" id="retryBtn" style="display:none;">Coba Lagi</button>
+    </div>
+
+  </div>
+</section>
+
+<footer>© 2026 Fisikita — SMAN 10 Bulukumba</footer>
+
+<script>
+  // ======================================================
+  // BANK SOAL — LISTRIK DINAMIS
+  // Tipe yang didukung: 'tf', 'mcq', 'isian', 'matching',
+  // 'dragword', 'sortdrop'. Lihat masing-masing objek di bawah
+  // untuk contoh strukturnya sebelum menambah soal baru.
+  // ======================================================
+  const QUESTIONS = [
+    {
+      type: 'tf', level: 'Mudah',
+      text: '1. Pernyataan: "Menurut Hukum Ohm, jika hambatan (R) suatu penghantar tetap, maka kuat arus (I) yang mengalir akan semakin besar jika tegangan (V) yang diberikan semakin besar." Apakah pernyataan ini benar?',
+      options: ['Benar', 'Salah'],
+      correct: 0,
+      explain: 'Benar. Hukum Ohm: I = V/R. Kalau R tetap, I berbanding lurus dengan V — semakin besar tegangan, semakin besar pula arus yang mengalir.'
+    },
+    {
+      type: 'mcq', level: 'Mudah',
+      text: '2. Sebuah lampu memiliki hambatan 20 Ω dipasang pada sumber tegangan 10 V. Kuat arus yang mengalir pada lampu tersebut adalah...',
+      options: ['0,2 A', '0,5 A', '2 A', '5 A', '20 A'],
+      correct: 1,
+      explain: 'I = V/R = 10/20 = 0,5 A. Ini penerapan langsung Hukum Ohm.'
+    },
+    {
+      type: 'mcq', level: 'Sedang',
+      text: '3. Tiga buah resistor masing-masing 2 Ω, 3 Ω, dan 5 Ω disusun seri. Besar hambatan pengganti dari rangkaian tersebut adalah...',
+      options: ['6 Ω', '8 Ω', '10 Ω', '12 Ω', '30 Ω'],
+      correct: 2,
+      explain: 'Pada rangkaian seri, hambatan pengganti = jumlah semua hambatan: Rs = R₁+R₂+R₃ = 2+3+5 = 10 Ω.'
+    },
+    {
+      type: 'isian', level: 'Sedang',
+      text: '4. Dua buah resistor 6 Ω dan 3 Ω disusun paralel, kemudian dihubungkan dengan sumber tegangan 2 V. Kuat arus yang mengalir dalam rangkaian tersebut adalah ... A. (tulis angkanya saja)',
+      correct: ['1', '1.0', '1,0'],
+      explain: 'Langkah 1 — cari dulu hambatan pengganti paralelnya: 1/Rp = 1/6 + 1/3 = 1/6 + 2/6 = 3/6, sehingga Rp = 2 Ω. Langkah 2 — baru terapkan Hukum Ohm ke rangkaiannya: I = V/Rp = 2/2 = 1 A. Soal seperti ini menggabungkan dua konsep sekaligus: rangkaian paralel dan Hukum Ohm.'
+    },
+    {
+      type: 'mcq', level: 'Sulit',
+      text: '5. Pada suatu titik percabangan rangkaian, arus yang masuk adalah I₁ = 5 A dan I₂ = 3 A. Arus yang keluar dari titik tersebut adalah I₃ dan I₄ = 2 A. Berdasarkan Hukum I Kirchhoff, besar arus I₃ adalah...',
+      options: ['2 A', '4 A', '6 A', '8 A', '10 A'],
+      correct: 2,
+      explain: 'Hukum I Kirchhoff: jumlah arus yang masuk = jumlah arus yang keluar suatu titik percabangan. I₁+I₂ = I₃+I₄ → 5+3 = I₃+2 → I₃ = 6 A.'
+    },
+    {
+      type: 'matching', level: 'Sedang',
+      text: '6. Jodohkan besaran listrik di kolom kiri dengan satuan SI-nya yang tepat di kolom kanan.',
+      hint: 'Klik salah satu kotak di kolom kanan (bank jawaban), lalu klik kotak kosong di sebelah besaran yang sesuai.',
+      pairs: [
+        { left: 'Kuat arus listrik', right: 'Ampere (A)' },
+        { left: 'Tegangan listrik', right: 'Volt (V)' },
+        { left: 'Hambatan listrik', right: 'Ohm (Ω)' },
+        { left: 'Daya listrik', right: 'Watt (W)' },
+        { left: 'Energi listrik', right: 'Joule (J)' }
+      ],
+      explain: 'Kuat arus → Ampere, Tegangan → Volt, Hambatan → Ohm, Daya → Watt, Energi → Joule. Kalau masih suka ketuker, ingat: satuan Watt dan Joule sering muncul bareng di tagihan listrik (Watt untuk daya alat, kWh untuk energi yang dipakai).'
+    },
+    {
+      type: 'dragword', level: 'Sedang',
+      text: '7. Lengkapi bunyi Hukum I Kirchhoff berikut dengan menyeret (klik) kata yang tepat dari bank kata di bawah.',
+      hint: 'Klik kata di bank kata untuk mengisi kotak kosong secara berurutan. Klik kotak yang sudah terisi untuk mengembalikan kata itu ke bank.',
+      sentenceParts: ['Jumlah kuat arus yang ', null, ' pada suatu titik percabangan sama dengan jumlah kuat arus yang ', null, ' dari titik tersebut.'],
+      blanks: ['masuk', 'keluar'],
+      wordbank: ['masuk', 'keluar', 'hilang', 'bertambah'],
+      explain: 'Bunyi lengkap Hukum I Kirchhoff: "Jumlah kuat arus yang MASUK pada suatu titik percabangan sama dengan jumlah kuat arus yang KELUAR dari titik tersebut." Hukum ini berlaku karena muatan listrik bersifat kekal — tidak ada arus yang tiba-tiba hilang atau muncul begitu saja di satu titik.'
+    },
+    {
+      type: 'mcq', level: 'Sedang',
+      text: '8. Sebuah setrika listrik memiliki daya 350 W digunakan selama 2 jam. Energi listrik yang digunakan setrika tersebut adalah...',
+      options: ['175 Wh', '350 Wh', '700 Wh', '1.400 Wh', '2.450 Wh'],
+      correct: 2,
+      explain: 'W = P×t = 350 W × 2 jam = 700 Wh (setara 0,7 kWh).'
+    },
+    {
+      type: 'isian', level: 'Sedang',
+      text: '9. Sebuah lampu 40 W menyala selama 5 jam setiap hari. Jika tarif listrik Rp1.500 per kWh, biaya pemakaian lampu tersebut selama satu hari adalah Rp ... (tulis angkanya saja, tanpa titik/koma)',
+      correct: ['300'],
+      explain: 'Energi = P×t = 40 W × 5 jam = 200 Wh = 0,2 kWh. Biaya = 0,2 kWh × Rp1.500 = Rp300. Begini juga cara menghitung tagihan listrik rumahmu — makin lama alat menyala dan makin besar dayanya, makin besar biayanya.'
+    },
+    {
+      type: 'sortdrop', level: 'Sulit',
+      text: '10. Kelompokkan penerapan berikut ke dalam kategori "Rangkaian Seri" atau "Rangkaian Paralel" yang sesuai dalam kehidupan sehari-hari.',
+      hint: 'Klik salah satu item, lalu klik kotak kategori yang sesuai untuk memindahkannya.',
+      items: [
+        { label: 'Instalasi lampu di rumah (tiap saklar bisa dinyalakan sendiri-sendiri)', bin: 'paralel' },
+        { label: 'Lampu hias natal model lama (kalau satu mati, semua ikut mati)', bin: 'seri' },
+        { label: 'Susunan baterai berjejer di dalam senter', bin: 'seri' },
+        { label: 'Stop kontak/colokan listrik di dinding rumah', bin: 'paralel' }
+      ],
+      bins: [
+        { key: 'seri', label: 'Rangkaian Seri' },
+        { key: 'paralel', label: 'Rangkaian Paralel' }
+      ],
+      explain: 'Ciri rangkaian seri: kalau satu komponen putus/mati, semuanya ikut mati (satu jalur arus) — contohnya lampu hias lama dan susunan baterai di senter. Ciri rangkaian paralel: tiap komponen punya jalurnya sendiri, jadi kalau satu mati yang lain tetap menyala — contohnya instalasi rumah dan stop kontak, ini juga alasan kenapa rumah modern selalu pakai paralel.'
+    }
+  ];
+
+  // ------------------------------------------------------
+  // STATE bantu untuk soal interaktif (matching, dragword, sortdrop)
+  // ------------------------------------------------------
+  const matchState = {};   // {qIndex: [rightTextTerpilih_per_left, ...]}
+  const dragwordState = {}; // {qIndex: [kataTerisi_per_blank, ...]}
+  const sortState = {};    // {qIndex: [binKey_per_item, ...]}
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i = a.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function renderQuestions(){
+    const list = document.getElementById('questionList');
+    list.innerHTML = QUESTIONS.map((q, i) => {
+      const levelClass = q.level === 'Mudah' ? 'level-mudah' : q.level === 'Sedang' ? 'level-sedang' : 'level-sulit';
+      const typeLabel = {tf:'Benar/Salah', mcq:'Pilihan Ganda', isian:'Isian Singkat', matching:'Menjodohkan', dragword:'Lengkapi Kalimat', sortdrop:'Kategorisasi'}[q.type];
+      let body = '';
+
+      if(q.type === 'isian'){
+        body = `<input type="text" class="isian-input" id="q${i}" placeholder="Tulis jawabanmu di sini">`;
+
+      } else if(q.type === 'tf' || q.type === 'mcq'){
+        body = `<div class="opt-list" id="q${i}">` + q.options.map((opt, oi) => `
+          <label class="opt-item" data-oi="${oi}">
+            <input type="radio" name="q${i}" value="${oi}">
+            <span>${opt}</span>
+          </label>
+        `).join('') + `</div>`;
+
+      } else if(q.type === 'matching'){
+        matchState[i] = new Array(q.pairs.length).fill(null);
+        const shuffledRights = shuffle(q.pairs.map(p => p.right));
+        body = `
+          <div class="match-wrap" id="q${i}" data-shuffled='${JSON.stringify(shuffledRights)}'>
+            ${q.pairs.map((p, li) => `
+              <div class="match-row">
+                <div class="match-left">${p.left}</div>
+                <div class="match-slot" data-li="${li}" onclick="matchSlotClick(${i}, ${li})">klik untuk pilih jawaban</div>
+              </div>
+            `).join('')}
+            <div class="match-pool" id="matchPool${i}">
+              ${shuffledRights.map((r, ri) => `<div class="pool-chip" data-ri="${ri}" data-text="${r.replace(/"/g,'&quot;')}" onclick="matchPoolClick(${i}, ${ri})">${r}</div>`).join('')}
+            </div>
+          </div>
+        `;
+
+      } else if(q.type === 'dragword'){
+        dragwordState[i] = new Array(q.blanks.length).fill(null);
+        const bank = shuffle(q.wordbank);
+        let blankIdx = 0;
+        const sentenceHtml = q.sentenceParts.map(part => {
+          if(part === null){
+            const bi = blankIdx++;
+            return `<span class="blank-slot empty" data-bi="${bi}" onclick="dragwordBlankClick(${i}, ${bi})">___</span>`;
+          }
+          return part;
+        }).join('');
+        body = `
+          <div id="q${i}">
+            <div class="sentence-box" id="sentenceBox${i}">${sentenceHtml}</div>
+            <div class="word-bank" id="wordBank${i}">
+              ${bank.map((w, wi) => `<div class="word-chip" data-wi="${wi}" data-word="${w}" onclick="dragwordBankClick(${i}, ${wi})">${w}</div>`).join('')}
+            </div>
+          </div>
+        `;
+
+      } else if(q.type === 'sortdrop'){
+        sortState[i] = new Array(q.items.length).fill(null);
+        body = `
+          <div id="q${i}">
+            <div class="sort-pool" id="sortPool${i}">
+              ${q.items.map((it, ii) => `<div class="sort-item" data-ii="${ii}" onclick="sortItemClick(${i}, ${ii})">${it.label}</div>`).join('')}
+            </div>
+            <div class="sort-bins">
+              ${q.bins.map(b => `
+                <div class="sort-bin" data-bin="${b.key}" onclick="sortBinClick(${i}, '${b.key}')">
+                  <h4>${b.label}</h4>
+                  <div class="bin-items" id="bin-${i}-${b.key}"></div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="q-card" id="qcard${i}">
+          <div class="q-top">
+            <span class="q-num">${i+1}</span>
+            <span class="type-chip">${typeLabel}</span>
+            <span class="level-chip ${levelClass}">${q.level}</span>
+          </div>
+          <div class="q-text">${q.text.replace(/^\d+\.\s/, '')}</div>
+          ${q.hint ? `<div class="q-hint">💡 ${q.hint}</div>` : ''}
+          ${body}
+          <div class="explain" id="explain${i}"><strong>Pembahasan:</strong> ${q.explain}</div>
+        </div>
+      `;
+    }).join('');
+  }
+  renderQuestions();
+
+  // ------------------------------------------------------
+  // INTERAKSI: MENJODOHKAN
+  // ------------------------------------------------------
+  let matchActivePick = null; // {qIndex, ri, text, chipEl}
+
+  function matchPoolClick(qi, ri){
+    const chip = document.querySelector(`#matchPool${qi} [data-ri="${ri}"]`);
+    if(chip.classList.contains('used')) return;
+    document.querySelectorAll(`#matchPool${qi} .pool-chip`).forEach(c => c.classList.remove('active-pick'));
+    chip.classList.add('active-pick');
+    matchActivePick = { qi, ri, text: chip.dataset.text, chip };
+  }
+  function matchSlotClick(qi, li){
+    if(!matchActivePick || matchActivePick.qi !== qi) return;
+    const slot = document.querySelector(`#q${qi} .match-slot[data-li="${li}"]`);
+    // kalau slot ini sudah terisi, kembalikan chip lama ke pool dulu
+    const old = matchState[qi][li];
+    if(old !== null){
+      const oldChip = document.querySelector(`#matchPool${qi} [data-ri="${old.ri}"]`);
+      if(oldChip) oldChip.classList.remove('used');
+    }
+    matchState[qi][li] = { ri: matchActivePick.ri, text: matchActivePick.text };
+    slot.textContent = matchActivePick.text;
+    slot.classList.add('filled');
+    matchActivePick.chip.classList.add('used');
+    matchActivePick.chip.classList.remove('active-pick');
+    matchActivePick = null;
+  }
+
+  // ------------------------------------------------------
+  // INTERAKSI: LENGKAPI KALIMAT (drag the word)
+  // ------------------------------------------------------
+  let dragwordActivePick = null; // {qi, wi, word, chip}
+
+  function dragwordBankClick(qi, wi){
+    const chip = document.querySelector(`#wordBank${qi} [data-wi="${wi}"]`);
+    if(chip.classList.contains('used')) return;
+    document.querySelectorAll(`#wordBank${qi} .word-chip`).forEach(c => c.classList.remove('active-pick'));
+    chip.classList.add('active-pick');
+    dragwordActivePick = { qi, wi, word: chip.dataset.word, chip };
+  }
+  function dragwordBlankClick(qi, bi){
+    const blank = document.querySelector(`#sentenceBox${qi} [data-bi="${bi}"]`);
+    // kalau blank sudah terisi, klik untuk mengosongkan & kembalikan ke bank
+    const old = dragwordState[qi][bi];
+    if(old !== null){
+      const oldChip = document.querySelector(`#wordBank${qi} [data-wi="${old.wi}"]`);
+      if(oldChip) oldChip.classList.remove('used');
+      dragwordState[qi][bi] = null;
+      blank.textContent = '___';
+      blank.classList.add('empty');
+      return;
+    }
+    if(!dragwordActivePick || dragwordActivePick.qi !== qi) return;
+    dragwordState[qi][bi] = { wi: dragwordActivePick.wi, word: dragwordActivePick.word };
+    blank.textContent = dragwordActivePick.word;
+    blank.classList.remove('empty');
+    dragwordActivePick.chip.classList.add('used');
+    dragwordActivePick.chip.classList.remove('active-pick');
+    dragwordActivePick = null;
+  }
+
+  // ------------------------------------------------------
+  // INTERAKSI: KATEGORISASI (drag and drop)
+  // ------------------------------------------------------
+  let sortActivePick = null; // {qi, ii, chip}
+
+  function sortItemClick(qi, ii){
+    const chip = document.querySelector(`#sortPool${qi} [data-ii="${ii}"]`) || findSortChip(qi, ii);
+    document.querySelectorAll(`[id^="sortPool${qi}"] .sort-item, [id^="bin-${qi}-"] .sort-chip`).forEach(c => c.classList.remove('active-pick'));
+    chip.classList.add('active-pick');
+    sortActivePick = { qi, ii, chip };
+  }
+  function findSortChip(qi, ii){
+    return document.querySelector(`[id^="bin-${qi}-"] [data-ii="${ii}"]`);
+  }
+  function sortBinClick(qi, binKey){
+    if(!sortActivePick || sortActivePick.qi !== qi) return;
+    const ii = sortActivePick.ii;
+    const q = QUESTIONS[qi];
+    const item = q.items[ii];
+    sortState[qi][ii] = binKey;
+    const target = document.getElementById(`bin-${qi}-${binKey}`);
+    const chip = document.createElement('div');
+    chip.className = 'sort-chip';
+    chip.dataset.ii = ii;
+    chip.textContent = item.label;
+    chip.onclick = () => sortItemClick(qi, ii);
+    sortActivePick.chip.remove();
+    target.appendChild(chip);
+    sortActivePick = null;
+  }
+
+  // ------------------------------------------------------
+  // NORMALISASI & PENGECEKAN JAWABAN
+  // ------------------------------------------------------
+  function normalizeIsian(v){
+    return v.trim().toLowerCase().replace(/\s+/g, '');
+  }
+
+  function checkAnswers(){
+    let score = 0;
+    const per = 10; // tiap soal bobotnya sama, total 100
+
+    QUESTIONS.forEach((q, i) => {
+      const card = document.getElementById('qcard' + i);
+      let earned = 0; // 0..1 (proporsi benar untuk soal ini)
+
+      if(q.type === 'isian'){
+        const input = document.getElementById('q' + i);
+        input.disabled = true;
+        const userVal = normalizeIsian(input.value || '');
+        earned = q.correct.some(c => normalizeIsian(c) === userVal) ? 1 : 0;
+
+      } else if(q.type === 'tf' || q.type === 'mcq'){
+        const checked = document.querySelector(`input[name="q${i}"]:checked`);
+        const userIdx = checked ? parseInt(checked.value) : -1;
+        earned = userIdx === q.correct ? 1 : 0;
+        document.querySelectorAll(`#q${i} .opt-item`).forEach(el => {
+          const oi = parseInt(el.dataset.oi);
+          el.querySelector('input').disabled = true;
+          if(oi === q.correct) el.classList.add('opt-correct');
+          if(oi === userIdx && userIdx !== q.correct) el.classList.add('opt-wrong-pick');
+        });
+
+      } else if(q.type === 'matching'){
+        let benar = 0;
+        q.pairs.forEach((p, li) => {
+          const slot = document.querySelector(`#q${i} .match-slot[data-li="${li}"]`);
+          const picked = matchState[i][li];
+          const isRight = picked && picked.text === p.right;
+          slot.classList.add(isRight ? 'slot-correct' : 'slot-wrong');
+          if(!picked){ slot.textContent = '(tidak dijawab) — jawaban benar: ' + p.right; }
+          else if(!isRight){ slot.textContent += '  →  seharusnya: ' + p.right; }
+          if(isRight) benar++;
+        });
+        document.querySelectorAll(`#matchPool${i} .pool-chip`).forEach(c => c.style.pointerEvents = 'none');
+        earned = benar / q.pairs.length;
+
+      } else if(q.type === 'dragword'){
+        let benar = 0;
+        q.blanks.forEach((correctWord, bi) => {
+          const blank = document.querySelector(`#sentenceBox${i} [data-bi="${bi}"]`);
+          const filled = dragwordState[i][bi];
+          const isRight = filled && filled.word === correctWord;
+          blank.classList.add(isRight ? 'blank-correct' : 'blank-wrong');
+          if(!filled){ blank.textContent = '(kosong: ' + correctWord + ')'; }
+          if(isRight) benar++;
+        });
+        document.querySelectorAll(`#wordBank${i} .word-chip`).forEach(c => c.style.pointerEvents = 'none');
+        earned = benar / q.blanks.length;
+
+      } else if(q.type === 'sortdrop'){
+        let benar = 0;
+        q.items.forEach((it, ii) => {
+          const picked = sortState[i][ii];
+          const isRight = picked === it.bin;
+          const chip = document.querySelector(`[id^="bin-${i}-"] [data-ii="${ii}"]`) || document.querySelector(`#sortPool${i} [data-ii="${ii}"]`);
+          if(chip) chip.classList.add(isRight ? 'item-correct' : 'item-wrong');
+          if(isRight) benar++;
+        });
+        document.querySelectorAll(`#sortPool${i} .sort-item, [id^="bin-${i}-"] .sort-chip`).forEach(c => c.style.pointerEvents = 'none');
+        earned = benar / q.items.length;
+      }
+
+      if(earned >= 0.999){ card.classList.add('correct'); }
+      else if(earned <= 0.001){ card.classList.add('incorrect'); }
+      else { card.classList.add('partial'); }
+
+      document.getElementById('explain' + i).classList.add('show');
+      score += earned * per;
+    });
+
+    showScore(Math.round(score));
+    document.getElementById('submitBtn').style.display = 'none';
+    document.getElementById('retryBtn').style.display = 'inline-block';
+    document.getElementById('scorePanel').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function showScore(score){
+    const panel = document.getElementById('scorePanel');
+    document.getElementById('scoreNum').innerHTML = score + '<span>/100</span>';
+
+    let msg, sub;
+    if(score >= 90){
+      msg = 'Keren, kelistrikan dinamis udah di tangan kamu! ⚡';
+      sub = 'Dari Hukum Ohm sampai Kirchhoff kamu kuasai dengan mantap. Lanjut aja ke topik berikutnya, atau bantu temanmu yang masih bingung soal rangkaian.';
+    } else if(score >= 70){
+      msg = 'Solid! Tinggal dikit lagi buat sempurna. 👍';
+      sub = 'Sebagian besar konsep udah kepegang. Cek lagi soal yang masih meleset, biasanya cuma soal teliti di hitungan atau arah arus.';
+    } else if(score >= 50){
+      msg = 'Lumayan, tapi beberapa konsep masih perlu dirapikan. 📘';
+      sub = 'Coba baca ulang pembahasan tiap soal di atas pelan-pelan, terutama bagian rangkaian seri-paralel dan Hukum Kirchhoff, baru latihan lagi.';
+    } else {
+      msg = 'Nggak apa-apa, ini kan baru latihan. Yuk diulang! 💪';
+      sub = 'Listrik dinamis emang butuh latihan berkali-kali biar kebiasa. Baca pembahasan tiap soal satu-satu, jangan buru-buru, terus coba lagi kuisnya.';
+    }
+    document.getElementById('scoreMsg').textContent = msg;
+    document.getElementById('scoreSub').textContent = sub;
+    panel.classList.add('show');
+  }
+
+  document.getElementById('submitBtn').addEventListener('click', checkAnswers);
+  document.getElementById('retryBtn').addEventListener('click', () => location.reload());
+</script>
+
+</body>
+</html>
